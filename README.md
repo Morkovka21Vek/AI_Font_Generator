@@ -2,6 +2,8 @@
  [EN]Creates the rest of the font characters using AI.(translated by Yandex translator)  
  I have a thc with news on the project https://t.me /+PZdpMF19QdU0NTUy (only in Russian)  
  TO WORK, YOU NEED TO INSTALL FontForge(https://fontforge.org/en-US/downloads/windows /) REMEMBER THE PATH TO THE PROGRAM  
+
+     
  TRAINING:  
     0.At startup, run the script for the first time creatFolders.py  
     1.Place fonts in the "input" folder (at least 5 are recommended)  
