@@ -1,6 +1,6 @@
 # AI_Font_Generator(Beta version) version: 0.3.3  
  [EN]Creates the rest of the font characters using AI.(translated by Yandex translator)  
- I have a thc with news on the project https://t.me /+PZdpMF19QdU0NTUy (only in Russian)  
+ I have a telegram channel with news on the project https://t.me /+PZdpMF19QdU0NTUy (only in Russian)  
  TO WORK, YOU NEED TO INSTALL FontForge(https://fontforge.org/en-US/downloads/windows /) REMEMBER THE PATH TO THE PROGRAM  
 
      
