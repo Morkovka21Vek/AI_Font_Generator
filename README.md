@@ -7,7 +7,7 @@
  TRAINING:  
     0.At startup, run the script for the first time creatFolders.py  
     1.Place fonts in the "input" folder (at least 5 are recommended)  
-    2.Run start_ttf2png.bat (if it does not start, go to the folder with the FontForge program next\bin\ffpython.exe click on it with PCM+SHIFT and select "Copy as path", then click on start_ttf2png.bat and click "Edit" then replace "C:\Program Files (x86)\FontForgeBuilds\bin\ffpython.exe" on the way to ffpython.exe )  
+    2.Run start_ttf2png.bat
     3.Run del.py  
     4.Run crop.py  
     5.Launch resize.py  
@@ -30,7 +30,7 @@
  ОБУЧЕНИЕ(tarining):  
     0.При запуске впервые запустите скрипт creatFolders.py  
     1.В папку "input" поместите шрифты(рекомендуется не менее 5 штук)  
-    2.Запустите start_ttf2png.bat(если не запускается перейдите в папку с программой FontForge далее \bin\ffpython.exe кликните по ней ПКМ+SHIFT и выберите "Копировать как путь" далее кликните ПКМ по start_ttf2png.bat и нажмите "Изменить" далее замените "C:\Program Files (x86)\FontForgeBuilds\bin\ffpython.exe" на путь к ffpython.exe)  
+    2.Запустите start_ttf2png.bat 
     3.Запустите del.py  
     4.Запустите crop.py  
     5.Запустите resize.py  
