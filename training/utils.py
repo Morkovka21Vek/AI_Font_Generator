@@ -1,9 +1,24 @@
 import os
 import numpy as np
 from PIL import Image
+from copy import deepcopy
+from random import randint
 
 #def find(s, ch):
 #    return [i for i, ltr in enumerate(s) if ltr == ch]
+
+def sort_by_indexes(lst, indexes, reverse=False):
+  return [val for (_, val) in sorted(zip(indexes, lst), key=lambda x: \
+          x[0], reverse=reverse)]
+
+def shuffle(lst):
+  temp_lst = deepcopy(lst)
+  m = len(temp_lst)
+  while (m):
+    m -= 1
+    i = randint(0, m)
+    temp_lst[m], temp_lst[i] = temp_lst[i], temp_lst[m]
+  return temp_lst
 
 def load_dataset():
     directory = os.path.realpath('out_png')
@@ -75,7 +90,7 @@ def load_dataset():
         #np.append(x_train, np.reshape(x_train, (np.shape(x_train)[0], np.shape(x_train)[1] * np.shape(x_train)[2])))
     
         # labels
-    print('Импорт завершён на 33%',end='')
+    print('Импорт завершён на 25%',end='')
     for i1 in range(len(x_train)):
         for i2 in range(len(x_train[i1])):
             if y_train[i1][i2] != -1:
@@ -90,13 +105,20 @@ def load_dataset():
     #goal_pred_np = np.array(goal_pred)
     
     #return x_train, y_train
-    print('\rИмпорт завершён на 66%',end='')
+    print('\rИмпорт завершён на 50%',end='')
     w = []
     z = []
     for i in range(len(inp)):
         w.append(np.reshape(inp[i].ravel(), (-1, 1)).astype(np.float32))
         z.append(np.reshape(goal_pred[i].ravel(), (-1, 1)).astype(np.float32))
-    inp = np.array(w)
-    goal_pred = np.array(z)
+    #inp = np.array(w)
+    #goal_pred = np.array(z)
+    print('\rИмпорт завершён на 75%',end='')
+    numbers = np.arange(len(w))
+    numbers = shuffle(numbers)
+    #print(sort_by_indexes(w, numbers))
+    inp = np.array(sort_by_indexes(w, numbers))
+    goal_pred = np.array(sort_by_indexes(z, numbers))
+    
     print('\rИмпорт успешно завершён!')
     return inp, goal_pred
