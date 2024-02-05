@@ -1,8 +1,5 @@
 # AI_Font_Generator(Beta version) version: 0.3.3  
- [EN]Creates the rest of the font characters using AI.(translated by Yandex translator)  
- I have a telegram channel with news on the project https://t.me /+PZdpMF19QdU0NTUy (only in Russian)  
- TO WORK, YOU NEED TO INSTALL FontForge(https://fontforge.org/en-US/downloads/windows /) REMEMBER THE PATH TO THE PROGRAM  
-
+ [EN]Creates the rest of the font characters using AI.(translated by Yandex translator) 
      
  TRAINING:  
     0.At startup, run the script for the first time creatFolders.py  
@@ -25,8 +22,7 @@
     8.Run svg2ttf.py (none)  
        
  [RU]Создает остальные символы шрифта с помощью ИИ.  
- У меня есть тгк с новостями по проекту https://t.me/+PZdpMF19QdU0NTUy  
- ДЛЯ РАБОТЫ НУЖНО УСТАНОВИТЬ FontForge(https://fontforge.org/en-US/downloads/windows/) ЗАПОМНИТЕ ПУТЬ К ПРОГРАММЕ  
+ У меня есть тгк с новостями по проекту https://t.me/+PZdpMF19QdU0NTUy
  ОБУЧЕНИЕ(tarining):  
     0.При запуске впервые запустите скрипт creatFolders.py  
     1.В папку "input" поместите шрифты(рекомендуется не менее 5 штук)  
