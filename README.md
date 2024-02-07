@@ -1,4 +1,4 @@
-# AI_Font_Generator(Beta version) version: 0.3.3  
+# AI_Font_Generator(Beta version) version: 0.3.5  
  [EN]Creates the rest of the font characters using AI.(translated by Yandex translator) 
      
  WHEN STARTING FOR THE FIRST TIME OR WHEN CHANGING THE PATH, RUN THE SCRIPT settings.py  
