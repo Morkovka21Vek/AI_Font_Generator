@@ -1,7 +1,11 @@
 import fontforge
 import os
+import json
 
-fileinputname = input('Введите пожалуйста путь к файлу шрифта(можно перетащить): >>>').replace('"', '')
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
+
+fileinputname = input(language["InputFilePath"]).replace('"', '')
 #print(fileinputname)
 F = fontforge.open(fileinputname)
 filename = os.path.realpath('out_png') + '\\'
@@ -11,3 +15,5 @@ if not os.path.exists(filename):
 for name in F:
     #print(filename + '\\' + name + '.png')
     F[name].export(filename + '\\' + name + '.png')
+print(language["Programm_End"])
+input()

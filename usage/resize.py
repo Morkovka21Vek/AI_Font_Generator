@@ -1,5 +1,9 @@
 from PIL import Image
 import os
+import json
+
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
 
 def resize_images(input_path, output_path, new_size=(40, 40)):
     # Open the image
@@ -12,8 +16,8 @@ def resize_images(input_path, output_path, new_size=(40, 40)):
     resized_img.save(output_path)
 
 def resize(files, directory):
-    x = int(input('Введите пожалуйста размер по оси x: >>>'))
-    y = int(input('Введите пожалуйста размер по оси y: >>>'))
+    x = int(input(language["SizeX"]))
+    y = int(input(language["SizeY"]))
     for f in files:
         filename = directory + '\\' + f
         im = Image.open(filename)
@@ -22,7 +26,7 @@ def resize(files, directory):
 
 directory = os.path.realpath('out_png')
 files = os.listdir(directory)
-strq='Выберите пожалуйста какой шрифт вы хотите использовать(напишите номер):\n'
+strq=language["SelectFont"]
 for i in range(len(files)):
     strq += '[' + str(i) + ']' + files[i] + '\n'
 strq += '>>>'
@@ -32,9 +36,11 @@ try:
     print(directory)
     files = os.listdir(directory)
     resize(files, directory)
-except IndexError:
-    print('Вы ввели несущиствующий номер!(ENTER чтобы выйти)')
+    print(language["Programm_End"])
     input()
-except Exception:
-    print('Неизвестная ошибка! Обратитеть в автору нейросети.(ENTER чтобы выйти)')
+except IndexError:
+    print(language["ErrorNumber"])
+    input()
+except Exception as e:
+    print(language["Exception"], e)
     input()

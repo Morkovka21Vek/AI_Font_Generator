@@ -1,5 +1,9 @@
 from PIL import Image
 import os
+import json
+
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
 
 def resize_images(input_path, output_path, new_size=(40, 40)):
     # Open the image
@@ -13,11 +17,14 @@ def resize_images(input_path, output_path, new_size=(40, 40)):
 
 directory = os.path.realpath('out_png')
 files = os.listdir(directory)
-x = int(input('Введите пожалуйста размер по оси x: >>>'))
-y = int(input('Введите пожалуйста размер по оси y: >>>'))
+x = int(input(language["SizeX"]))
+y = int(input(language["SizeY"]))
 for f in files:
     filename = directory + '\\' + f
     im = Image.open(filename)
     resize_images(filename, filename, (x,y))
     
     # F[name].export(filename, 600)     # set height to 600 pixels
+
+print(language["Programm_End"])
+input()

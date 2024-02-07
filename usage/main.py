@@ -4,6 +4,7 @@ import os
 import utils
 from PIL import Image
 from tqdm import tqdm
+import json
 
 #Xshape = 35
 
@@ -68,17 +69,20 @@ def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_outpu
             #matplotlib.image.imsave(directoryOut + '\\' + letters[i] + '.png', pred)
             im.save(directoryOut + '\\' + str(stLetter) + '.' + letters[letter] + '.png', format='PNG')
 
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
+    
 directory = os.path.realpath('out_png')
 directoryModel = os.path.realpath('models')
 directoryOut = os.path.realpath('out_main')
 files = os.listdir(directory)
 filesModel = os.listdir(directoryModel)
-strq='Выберите пожалуйста какой шрифт вы хотите использовать(напишите номер):\n'
+strq=language["SelectFont"]
 for i in range(len(files)):
     strq += '[' + str(i) + ']' + files[i] + '\n'
 strq += '>>>'
 num = int(input(strq))
-strq='Выберите пожалуйста какую модель вы хотите использовать(напишите номер):\n'
+strq=language["SelectModel"]
 for i in range(len(filesModel)):
     if not '_bias' in filesModel[i]:
         strq += '[' + str(i) + ']' + filesModel[i] + '\n'
@@ -93,10 +97,11 @@ try:
     inp, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape = utils.load_dataset(directory, files, directoryModel)
     #print(type(weight[1]))
     Start(inp, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape)
-    print('Нейросеть закончила работу!(ENTER чтобы выйти)')
+    print(language["Programm_End"])
+    input()
 except IndexError:
-    print('Вы ввели несущиствующий номер!(ENTER чтобы выйти)')
+    print(language["ErrorNumber"])
     input()
 except Exception as e:
-    print('Неизвестная ошибка! Обратитеть в автору нейросети.(ENTER чтобы выйти)\nСама ошибка(нужно сохранить):', e)
+    print(language["Exception"], e)
     input()

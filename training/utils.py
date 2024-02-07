@@ -3,6 +3,10 @@ import numpy as np
 from PIL import Image
 from copy import deepcopy
 from random import randint
+import json
+
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
 
 #def find(s, ch):
 #    return [i for i, ltr in enumerate(s) if ltr == ch]
@@ -90,7 +94,7 @@ def load_dataset():
         #np.append(x_train, np.reshape(x_train, (np.shape(x_train)[0], np.shape(x_train)[1] * np.shape(x_train)[2])))
     
         # labels
-    print('Импорт завершён на 25%',end='')
+    print(language["Import25"],end='')
     for i1 in range(len(x_train)):
         for i2 in range(len(x_train[i1])):
             if y_train[i1][i2] != -1:
@@ -105,7 +109,7 @@ def load_dataset():
     #goal_pred_np = np.array(goal_pred)
     
     #return x_train, y_train
-    print('\rИмпорт завершён на 50%',end='')
+    print(language["Import50"],end='')
     w = []
     z = []
     for i in range(len(inp)):
@@ -113,12 +117,12 @@ def load_dataset():
         z.append(np.reshape(goal_pred[i].ravel(), (-1, 1)).astype(np.float32))
     #inp = np.array(w)
     #goal_pred = np.array(z)
-    print('\rИмпорт завершён на 75%',end='')
+    print(language["Import75"],end='')
     numbers = np.arange(len(w))
     numbers = shuffle(numbers)
     #print(sort_by_indexes(w, numbers))
     inp = np.array(sort_by_indexes(w, numbers))
     goal_pred = np.array(sort_by_indexes(z, numbers))
     
-    print('\rИмпорт успешно завершён!')
+    print(language["ImportDone"])
     return inp, goal_pred

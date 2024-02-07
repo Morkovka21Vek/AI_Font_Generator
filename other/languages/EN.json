@@ -1,0 +1,20 @@
+{
+    "ChooseLanguage": "Please choose a language (write EN)",
+    "LanguageError": "You have chosen a non-existent language! (Press Enter to exit)",
+    "Start_s": "Start: >>>",
+    "End": "End: >>>",
+    "Export_end": "The export {} is completed!({})",
+    "SizeX": "Please enter the size on the axis x: >>>",
+    "SizeY": "Please enter the size on the axis y: >>>",
+    "ModelSave": "\nThe model is saved! (Press Enter to exit)",
+    "Programm_End": "The program has finished working. (Press Enter to exit)",
+    "SelectFont": "Please choose which font you want to use (write the number):\n",
+    "ErrorNumber": "You entered a non-existent number! (Press Enter to exit)",
+    "Exception": "Unknown error! Contact the author of the neural network. (ENTER чтобы выйти)\nError:\n",
+    "Import25": "The import is completed by 25%",
+    "Import50": "\rThe import is completed by 50%",
+    "Import75": "\rThe import is completed by 75%",
+    "ImportDone": "\rThe import has been completed successfully!",
+    "InputFilePath": "Please enter the path to the font file (you can drag and drop): >>>",
+    "SelectModel": "Please choose which model you want to use (write the number):\n"
+}

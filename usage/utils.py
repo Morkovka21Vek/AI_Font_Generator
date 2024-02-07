@@ -1,8 +1,12 @@
 import os
 import numpy as np
 from PIL import Image
+import json
+
 
 def load_dataset(directory, files, directoryModel):
+    with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+        language = json.load(f)
     letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     inp=[]
     Xshape = 0
@@ -66,5 +70,5 @@ def load_dataset(directory, files, directoryModel):
     #    #z.append(goal_pred[i].ravel())
     #inp = np.array(w)
     #goal_pred = np.array(z)
-    print('Импорт успешно завершён!')
+    print(language['ImportDone'])
     return inp_np, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape

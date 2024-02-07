@@ -1,5 +1,10 @@
 from PIL import Image
 import os
+import json
+
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
+
 directory = os.path.realpath('out_png')
 files = os.listdir(directory)
 for f in files:
@@ -16,3 +21,5 @@ for f in files:
         os.remove(filename)
         print('del: ', filename)
     # F[name].export(filename, 600)     # set height to 600 pixels
+print(language["Programm_End"])
+input()

@@ -1,5 +1,9 @@
 from PIL import Image
 import os
+import json
+
+with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+    language = json.load(f)
 
 def delete(files, directory):
     for f in files:
@@ -18,7 +22,7 @@ def delete(files, directory):
             
 directory = os.path.realpath('out_png')
 files = os.listdir(directory)
-strq='Выберите пожалуйста какой шрифт вы хотите использовать(напишите номер):\n'
+strq=language["SelectFont"]
 for i in range(len(files)):
     strq += '[' + str(i) + ']' + files[i] + '\n'
 strq += '>>>'
@@ -28,9 +32,11 @@ try:
     print(directory)
     files = os.listdir(directory)
     delete(files, directory)
-except IndexError:
-    print('Вы ввели несущиствующий номер!(ENTER чтобы выйти)')
+    print(language["Programm_End"])
     input()
-except Exception:
-    print('Неизвестная ошибка! Обратитеть в автору нейросети.(ENTER чтобы выйти)')
+except IndexError:
+    print(language["ErrorNumber"])
+    input()
+except Exception as e:
+    print(language["Exception"], e)
     input()
