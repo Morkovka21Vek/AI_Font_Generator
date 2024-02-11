@@ -1,9 +1,9 @@
 from PIL import Image
 import os
 import json
+import traceback
 
-with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-    language = json.load(f)
+
 
 def xRF(img):
     xR = 0
@@ -65,14 +65,16 @@ def crop(files, directory):
         im.save(filename)
 
 
-directory = os.path.realpath('out_png')
-files = os.listdir(directory)
-strq=language["SelectFont"]
-for i in range(len(files)):
-    strq += '[' + str(i) + ']' + files[i] + '\n'
-strq += '>>>'
-num = int(input(strq))
 try:
+    with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
+        language = json.load(f)
+    directory = os.path.realpath('out_png')
+    files = os.listdir(directory)
+    strq=language["SelectFont"]
+    for i in range(len(files)):
+        strq += '[' + str(i) + ']' + files[i] + '\n'
+    strq += '>>>'
+    num = int(input(strq))
     directory = directory + '\\' + files[num]
     print(directory)
     files = os.listdir(directory)
@@ -82,6 +84,5 @@ try:
 except IndexError:
     print(language["ErrorNumber"])
     input()
-except Exception as e:
-    print(language["Exception"], e)
-    input()
+except Exception:
+    input(language["Exception"], traceback.print_exc())

@@ -5,6 +5,8 @@ import utils
 from PIL import Image
 from tqdm import tqdm
 import json
+import traceback
+
 
 #Xshape = 35
 
@@ -16,7 +18,7 @@ def sigmoid(num):
     #return num
 
 
-def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape):
+def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape, weights_input_to_hidden):
     letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     for stLetter in tqdm(range(len(inp_const))):
         for letter in range(len(letters)):
@@ -49,9 +51,9 @@ def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_outpu
             hidden=[]
             inp = np.reshape(np.append(inp_const[stLetter], letter/(len(letters)-1)), (-1, 1))
             #hidden.append(sigmoid(bias[0] + np.dot(weight[0], np.append(inp_const[0], letter/len(letters)-1))))
-            hidden.append(sigmoid(bias[0] + np.dot(weight[0], inp)))
-            for i in range(1, len(weight)-1):
-                hidden.append(sigmoid(bias[i] + np.dot(weight[i], hidden[i-1])))
+            hidden.append(sigmoid(bias[0] + np.dot(weights_input_to_hidden, inp)))
+            for i in range(len(weight)):
+                hidden.append(sigmoid(bias[i+1] + np.dot(weight[i], hidden[i-1])))
             pred = sigmoid(bias_hidden_to_output + np.dot(weights_hidden_to_output, hidden[-1]))
             #print(pred)
             #pred = (pred - pred.min())/(pred.max() - pred.min()).reshape((Xshape, int(np.shape(weight[len(weight)-1])[1]/Xshape)))
@@ -72,36 +74,36 @@ def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_outpu
 with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
     language = json.load(f)
     
-directory = os.path.realpath('out_png')
-directoryModel = os.path.realpath('models')
-directoryOut = os.path.realpath('out_main')
-files = os.listdir(directory)
-filesModel = os.listdir(directoryModel)
-strq=language["SelectFont"]
-for i in range(len(files)):
-    strq += '[' + str(i) + ']' + files[i] + '\n'
-strq += '>>>'
-num = int(input(strq))
-strq=language["SelectModel"]
-for i in range(len(filesModel)):
-    if not '_bias' in filesModel[i]:
-        strq += '[' + str(i) + ']' + filesModel[i] + '\n'
-strq += '>>>'
-numModel = int(input(strq))
 try:
 #if True:
+    directory = os.path.realpath('out_png')
+    directoryModel = os.path.realpath('models')
+    directoryOut = os.path.realpath('out_main')
+    files = os.listdir(directory)
+    filesModel = os.listdir(directoryModel)
+    strq=language["SelectFont"]
+    for i in range(len(files)):
+        strq += '[' + str(i) + ']' + files[i] + '\n'
+    strq += '>>>'
+    num = int(input(strq))
+    strq=language["SelectModel"]
+    for i in range(len(filesModel)):
+        if not '_bias' in filesModel[i]:
+            strq += '[' + str(i) + ']' + filesModel[i] + '\n'
+    strq += '>>>'
+    numModel = int(input(strq))
     directory = directory + '\\' + files[num]
     directoryModel = directoryModel + '\\' + filesModel[numModel]
     print(directory, directoryModel)
     files = os.listdir(directory)
-    inp, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape = utils.load_dataset(directory, files, directoryModel)
+    inp, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape, weights_input_to_hidden = utils.load_dataset(directory, files, directoryModel)
     #print(type(weight[1]))
-    Start(inp, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape)
+    Start(inp, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape, weights_input_to_hidden)
     print(language["Programm_End"])
     input()
 except IndexError:
     print(language["ErrorNumber"])
     input()
-except Exception as e:
-    print(language["Exception"], e)
+except Exception:
+    print(language["Exception"], traceback.print_exc())
     input()

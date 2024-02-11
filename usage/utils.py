@@ -24,6 +24,7 @@ def load_dataset(directory, files, directoryModel):
     for i in range(weightData['weightLen']):
         weight.append(weightData[f'weight{i+1}'])
     weights_hidden_to_output = weightData['weights_hidden_to_output']
+    weights_input_to_hidden = weightData['weights_input_to_hidden']
 
     for i in range(weightData['biasLen']):
         bias.append(weightData[f'bias{i+1}'])
@@ -71,4 +72,4 @@ def load_dataset(directory, files, directoryModel):
     #inp = np.array(w)
     #goal_pred = np.array(z)
     print(language['ImportDone'])
-    return inp_np, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape
+    return inp_np, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape, weights_input_to_hidden

@@ -1,4 +1,4 @@
-# AI_Font_Generator(Beta version) version: 0.3.5  
+# AI_Font_Generator(Beta version) version: 0.3.6  
  [EN]Creates the rest of the font characters using AI.(translated by Yandex translator) 
      
  WHEN STARTING FOR THE FIRST TIME OR WHEN CHANGING THE PATH, RUN THE SCRIPT settings.py  
@@ -23,11 +23,11 @@
     8.Run svg2ttf.py (none)  
        
  [RU]Создает остальные символы шрифта с помощью ИИ.  
- У меня есть тгк с новостями по проекту https://t.me/+PZdpMF19QdU0NTUy  
+ У меня есть [телеграм канал](https://t.me/+PZdpMF19QdU0NTUy) с новостями по проекту 
 
  ПРИ ЗАПУСКЕ В ПЕРВЫЙ РАЗ ИЛИ ПРИ СМЕНЕ ПУТИ ЗАПУСТИТЕ СКРИПТ settings.py  
 
- ОБУЧЕНИЕ(tarining): 
+ ОБУЧЕНИЕ(tarining):  
     1.В папку "input" поместите шрифты(рекомендуется не менее 5 штук)  
     2.Запустите start_ttf2png.bat 
     3.Запустите del.py  
