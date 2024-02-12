@@ -7,10 +7,10 @@ import json
 def load_dataset(directory, files, directoryModel):
     with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
         language = json.load(f)
-    letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+    #letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
     inp=[]
     Xshape = 0
-    font=0
+    #font=0
     weight=[]
     bias=[]
     for file in files:

@@ -1,12 +1,28 @@
-import fontforge
 import os
 import json
 import traceback
-
-
+import sys
 try:
-    with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-        language = json.load(f)
+    import fontforge
+except:
+    #print(sys.executable.split("\\")[-1])
+    if not sys.executable.split("\\")[-1] == "ffpython.exe":
+        with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+            settings = json.load(f)["Settings"]
+        #print('cd '+settings["directoryToAI_Font_Generator"]+'\\training', settings["directoryToFFpython"])
+        os.system(settings["directoryToFFpython"])
+        os.system('cd '+settings["directoryToAI_Font_Generator"]+'\\usage')
+        quit()
+    else:
+        with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+            language = json.load(f)["Language"]
+        print(language["Exception"])
+        traceback.print_exc()
+        input()
+        quit()
+try:
+    with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+        language = json.load(f)["Language"]
     fileinputname = input(language["InputFilePath"]).replace('"', '')
     #print(fileinputname)
     F = fontforge.open(fileinputname)
@@ -20,4 +36,6 @@ try:
     print(language["Programm_End"])
     input()
 except:
-    input(language["Exception"], traceback.print_exc())
+    print(language["Exception"])
+    traceback.print_exc()
+    input()

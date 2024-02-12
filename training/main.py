@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import utils
 from numba import jit, prange#, vectorize, float64
@@ -134,8 +135,8 @@ weight_out, bias_out, weights_hidden_to_output_out, bias_hidden_to_output_out, w
 #print(weight_out)
 #print(f"Loss: {round((e_loss[0] / inpLayer) * 100, 3)}%")
 #print(f"Accuracy: {round((e_correct / inpLayer) * 100, 3)}%")
-with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-    language = json.load(f)
+with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+    language = json.load(f)["Language"]
 curent_time = datetime.datetime.now()
 #print(f"100.0%\nНейросеть закончила обучение {curent_time}. Дождитесь окончания сохранения модели.")
 #strLA='Как обучалась модель:\n'

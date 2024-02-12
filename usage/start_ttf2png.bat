@@ -1,1 +1,0 @@
-%~dp0\ffpython\bin\ffpython.exe ttf2png.py

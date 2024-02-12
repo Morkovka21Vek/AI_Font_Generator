@@ -20,8 +20,8 @@ def delete(files, directory):
 
 
 try: 
-    with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-        language = json.load(f)        
+    with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+        language = json.load(f)["Language"]  
     directory = os.path.realpath('out_png')
     files = os.listdir(directory)
     strq=language["SelectFont"]
@@ -39,4 +39,6 @@ except IndexError:
     print(language["ErrorNumber"])
     input()
 except Exception:
-    input(language["Exception"], traceback.print_exc())
+    print(language["Exception"])
+    traceback.print_exc()
+    input()

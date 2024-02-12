@@ -5,8 +5,8 @@ from copy import deepcopy
 from random import randint
 import json
 
-with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-    language = json.load(f)
+with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+    language = json.load(f)["Language"]
 
 #def find(s, ch):
 #    return [i for i, ltr in enumerate(s) if ltr == ch]

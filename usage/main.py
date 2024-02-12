@@ -71,8 +71,8 @@ def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_outpu
             #matplotlib.image.imsave(directoryOut + '\\' + letters[i] + '.png', pred)
             im.save(directoryOut + '\\' + str(stLetter) + '.' + letters[letter] + '.png', format='PNG')
 
-with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-    language = json.load(f)
+with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+    language = json.load(f)["Language"]
     
 try:
 #if True:
@@ -105,5 +105,6 @@ except IndexError:
     print(language["ErrorNumber"])
     input()
 except Exception:
-    print(language["Exception"], traceback.print_exc())
+    print(language["Exception"])
+    traceback.print_exc()
     input()

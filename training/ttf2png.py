@@ -1,10 +1,22 @@
-import fontforge
 import os
 import json
-
+import sys
+try:
+    #print(sys.executable.split("\\")[-1])
+    import fontforge
+except:
+    #print(sys.executable.split("\\")[-1])
+    if not sys.executable.split("\\")[-1] == "ffpython.exe":
+        with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+            settings = json.load(f)["Settings"]
+        #print('cd '+settings["directoryToAI_Font_Generator"]+'\\training', settings["directoryToFFpython"])
+        os.system(settings["directoryToFFpython"])
+        os.system('cd '+settings["directoryToAI_Font_Generator"]+'\\training')
+    quit()
+    #input()
 #"C:\Program Files (x86)\FontForgeBuilds\bin\ffpython.exe" ttf2png.py
-with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-    language = json.load(f)
+with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+    language = json.load(f)["Language"]
 
 directory = os.path.realpath('input')
 files = os.listdir(directory)

@@ -10,7 +10,7 @@
     "Programm_End": "The program has finished working. (Press Enter to exit)",
     "SelectFont": "Please choose which font you want to use (write the number):\n",
     "ErrorNumber": "You entered a non-existent number! (Press Enter to exit)",
-    "Exception": "Unknown error! Contact the author of the neural network. (ENTER чтобы выйти)\nError:\n",
+    "Exception": "Unknown error! Contact the author of the neural network. (ENTER чтобы выйти)\nError:",
     "Import25": "The import is completed by 25%",
     "Import50": "\rThe import is completed by 50%",
     "Import75": "\rThe import is completed by 75%",

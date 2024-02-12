@@ -2,8 +2,8 @@ from PIL import Image
 import os
 import json
 
-with open(os.path.abspath(os.getcwd())+'\\language.json', encoding='utf-8') as f:
-    language = json.load(f)
+with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+    language = json.load(f)["Language"]
 
 def resize_images(input_path, output_path, new_size=(40, 40)):
     # Open the image
