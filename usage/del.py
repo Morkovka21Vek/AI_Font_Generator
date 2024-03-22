@@ -1,44 +1,122 @@
-from PIL import Image
-import os
-import json
-import traceback
+try:
+    from PIL import Image
+except Exception as e:
+    print("E008", e)
+    input()
+    quit()
+try:
+    import os
+    import json
+    import logging
+except Exception as e:
+    print("E001", e)
+    input()
+    quit()
 
+try:
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    logger.addHandler(console_handler)
+    if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")):
+        os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"))
+    file_handler = logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "del_log.log"), mode='w')
+    file_handler.setLevel(logging.DEBUG)
+    logger.addHandler(file_handler)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+except Exception as e:
+    print("E003", e)
+    input()
+    quit()
+
+logger.debug("Import Done!")
 
 def delete(files, directory):
     for f in files:
-        filename = directory + '\\' + f
-        im = Image.open(filename)
-        flag = False
-        for x in range(im.size[0]):
-            for y in range(im.size[1]):
-                #print(im.getpixel((x, y)), f)
-                if im.getpixel((x, y)) != 0:
-                    flag = True
-        if flag == False:
-            os.remove(filename)
-            print('del: ', filename)
+        try:
+            filename = os.path.join(directory, f)
+            im = Image.open(filename)
+        except Exception as err:
+            logger.error("E009",exc_info=True)
+            input()
+            quit()
+        try:
+            flag = False
+            for x in range(im.size[0]):
+                for y in range(im.size[1]):
+                    if im.getpixel((x, y)) != 0:
+                        flag = True
+        except Exception as err:
+            logger.error("E010",exc_info=True)
+            input()
+            quit()
+        try:
+            if flag == False:
+                os.remove(filename)
+                print('del: ', filename)
+        except Exception as err:
+            logger.error("E011",exc_info=True)
+            input()
+            quit()
 
 
 try: 
-    with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
-        language = json.load(f)["Language"]  
-    directory = os.path.realpath('out_png')
-    files = os.listdir(directory)
-    strq=language["SelectFont"]
-    for i in range(len(files)):
-        strq += '[' + str(i) + ']' + files[i] + '\n'
-    strq += '>>>'
-    num = int(input(strq))
-    directory = directory + '\\' + files[num]
-    print(directory)
-    files = os.listdir(directory)
+    try:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json'), encoding='utf-8') as f:
+            language = json.load(f)["Language"]
+        logger.debug("Import language Done")
+    except Exception as err:
+        logger.error('E002',exc_info=True)
+        input()
+        quit()
+    try:
+        directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_png')
+        files = os.listdir(directory)
+        logger.debug("Open folder Done")
+    except Exception as err:
+        logger.error('E006',exc_info=True)
+        input()
+        quit()
+    while True:
+        try:
+            strq=language["SelectFont"]
+            for i in range(len(files)):
+                strq += '[' + str(i) + ']' + files[i] + '\n'
+            strq += '>>>'
+        except Exception as err:
+            logger.error('E012',exc_info=True)
+            input()
+            quit()
+        try:
+            num = int(input(strq))
+        except Exception as err:
+            logger.error('E013',exc_info=True)
+            input()
+            quit()
+        if num >= 0 and num < len(files):
+            directory = os.path.join(directory, files[num])
+            logger.debug(directory)
+            break
+        else:
+            logger.warning('E014')
+            print(language["ErrorNumber"])
+    try:
+        files = os.listdir(directory)
+    except Exception as err:
+        logger.error('E015',exc_info=True)
+        input()
+        quit()
     delete(files, directory)
-    print(language["Programm_End"])
+    print(language["program_End"])
+    logger.debug('program End')
     input()
-except IndexError:
-    print(language["ErrorNumber"])
-    input()
-except Exception:
-    print(language["Exception"])
-    traceback.print_exc()
+#except IndexError:
+#    print(language["ErrorNumber"])
+#    input()
+except Exception as err:
+    logger.error('E000',exc_info=True)
+    #traceback.print_exc()
     input()

@@ -1,9 +1,55 @@
-import json
-import numpy as np
-import utils
-from numba import jit, prange#, vectorize, float64
-import datetime
-import os
+try:
+    import os
+    import json
+    import logging
+    import datetime
+except Exception as e:
+    print("E001", e)
+    input()
+    quit()
+try:
+    import numpy as np
+except Exception as e:
+    print("E024", e)
+    input()
+    quit()
+try:
+    import utils
+except Exception as e:
+    print("E025", e)
+    input()
+    quit()
+try:
+    from numba import jit, prange
+except Exception as e:
+    print("E032", e)
+    input()
+    quit()
+#try:
+#    from tqdm import tqdm
+#except Exception as e:
+#    print("E026", e)
+#    input()
+#    quit()
+    
+try:
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(logging.INFO)
+    logger.addHandler(console_handler)
+    if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")):
+        os.makedirs(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs"))
+    file_handler = logging.FileHandler(os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "main_log.log"), mode='w')
+    file_handler.setLevel(logging.DEBUG)
+    logger.addHandler(file_handler)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console_handler.setFormatter(formatter)
+    file_handler.setFormatter(formatter)
+except Exception as e:
+    print("E003", e)
+    input()
+    quit()
 
 @jit(nopython=True, fastmath=True, cache=True)
 def sigmoid(num):
@@ -55,9 +101,9 @@ def train(inp_const, goal_pred_const, hiddenLayerQuantity, weight, epochs, learn
             bias[-1] += -learning_rate * delta_hidden
             delta_hidden2 = delta_hidden
 
-            if False:
+            if True:
                 for i in range(hiddenLayerQuantity - 2, 0, -1):
-                    delta_hidden = np.transpose(weight[-i]) @ delta_hidden2 * (hidden[-(1+i)] * (1 - hidden[-1]))
+                    delta_hidden = np.transpose(weight[-i]) @ delta_hidden2 * (hidden[-(1+i)] * (1 - hidden[-1+i]))
             		#weights[-1] += -learning_rate * delta_hidden @ np.transpose(image)
                     #np.array([learning_rate]).astype(np.float32)[0]
                     weight[-(1+i)] += delta_hidden @ np.transpose(hidden[-(2+i)]) * -learning_rate
@@ -77,9 +123,6 @@ def train(inp_const, goal_pred_const, hiddenLayerQuantity, weight, epochs, learn
         #print(f"Loss: {round((e_loss[0] / inpLayer) * 100, 3)}%")
         #print(f"Accuracy: {round((e_correct / inpLayer) * 100, 3)}%")
     return weight, bias, weights_hidden_to_output, bias_hidden_to_output, weights_input_to_hidden
-
-#np.random.seed(2021) # Сид для генерации одинаковых весов
-
 
 inp_const, goal_pred_const = utils.load_dataset()
 
@@ -131,25 +174,16 @@ weights_hidden_to_output = np.random.rand(outLayer, hiddenLayer).astype(np.float
 #print('Перехожу дальше с epochs = {}, alpha = {}, inpLayer = {}, hiddenLayer = {}, outLayer = {}, hiddenLayerQuantity = {}, а длина inp_const = {}'.format(epochs,
 #                                                                                        alpha,inpLayer,hiddenLayer,outLayer,hiddenLayerQuantity,len(inp_const)))
 #print(bias[0])
+logger.info("Start training")
 weight_out, bias_out, weights_hidden_to_output_out, bias_hidden_to_output_out, weights_input_to_hidden_out = train(inp_const, goal_pred_const, hiddenLayerQuantity, weight, epochs, learning_rate, bias, weights_hidden_to_output, bias_hidden_to_output, weights_input_to_hidden)
-#print(weight_out)
+logger.info("End training")
 #print(f"Loss: {round((e_loss[0] / inpLayer) * 100, 3)}%")
 #print(f"Accuracy: {round((e_correct / inpLayer) * 100, 3)}%")
-with open(os.path.abspath(os.getcwd())+'\\settings.json', encoding='utf-8') as f:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'settings.json'), encoding='utf-8') as f:
     language = json.load(f)["Language"]
 curent_time = datetime.datetime.now()
 #print(f"100.0%\nНейросеть закончила обучение {curent_time}. Дождитесь окончания сохранения модели.")
-#strLA='Как обучалась модель:\n'
-#for i in prange(epochs):
-#    strLA+='Epoch: '
-#    strLA+=i
-#    strLA+='\nLoss: '
-#    strLA+=loss[i]
-#    strLA+='\nAccuracy: '
-#    strLA+=accuracy[i]
-#    strLA+='\n\n'
-#print(strLA)
-directory = os.path.realpath('output')+'\\'
+directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'output')
 #saved_arrays = {}
 #for i, array in enumerate(weight_out):
 #    saved_arrays[f'array{i+1}'] = array
@@ -171,26 +205,26 @@ saved_arrays['biasLen'] = len(bias)
 saved_arrays['Xshape'] = Xshape
 saved_arrays['Yshape'] = Yshape
 saved_arrays['weights_input_to_hidden'] = weights_input_to_hidden_out
-#print(directory+'model{}X{}_{}layers{}neurons{}-{}-{}'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,curent_time.day, curent_time.month, curent_time.year))
-if os.path.exists(directory+'model{}X{}_{}layers{}neurons{}-{}-{}.npz'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,curent_time.day, curent_time.month, curent_time.year)):
+if os.path.exists(os.path.join(directory, 'model{}X{}_{}layers{}neurons{}-{}-{}.npz'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,curent_time.day, curent_time.month, curent_time.year))):
     index = 2
     #print('OK1')
     while True:
-        if os.path.exists(directory+'model{}X{}_{}layers{}neurons{}-{}-{}({}).npz'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,curent_time.day, curent_time.month, curent_time.year, index)):
+        if os.path.exists(os.path.join(directory, 'model{}X{}_{}layers{}neurons{}-{}-{}({}).npz'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,curent_time.day, curent_time.month, curent_time.year, index))):
             index+=1
         else:
-            np.savez(directory+'model{}X{}_{}layers{}neurons{}-{}-{}({})'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,
-                                                        curent_time.day, curent_time.month, curent_time.year, index),  **saved_arrays)
+            np.savez(os.path.join(directory, 'model{}X{}_{}layers{}neurons{}-{}-{}({})'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,
+                                                        curent_time.day, curent_time.month, curent_time.year, index)),  **saved_arrays)
             break
 else:
-    np.savez(directory+'model{}X{}_{}layers{}neurons{}-{}-{}'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,
-                                                        curent_time.day, curent_time.month, curent_time.year),  **saved_arrays)
+    np.savez(os.path.join(directory, 'model{}X{}_{}layers{}neurons{}-{}-{}'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,
+                                                        curent_time.day, curent_time.month, curent_time.year)),  **saved_arrays)
 #np.savez(directory+'model{}X{}_{}layers{}neurons{}-{}-{}'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,
 #                                                        curent_time.day, curent_time.month, curent_time.year),  **saved_arrays)
 #np.savez(directory+'model{}X{}_{}layers{}neurons{}-{}-{}_bias'.format(outLayer, Xshape, hiddenLayerQuantity, hiddenLayer,
 #                                                        curent_time.day, curent_time.month, curent_time.year),  **saved_arrays_bias)
 
 print(language["ModelSave"])
+logger.debug('Program End')
 input()
 #hidden=[]
 #hidden.append(sigmoid(bias_out[0] + weights_input_to_hidden_out @ inp_const[0]).astype(np.float32))
