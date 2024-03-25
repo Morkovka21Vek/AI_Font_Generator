@@ -1,4 +1,7 @@
 pillow
 numpy
 tqdm
+fonttools
 colorama
+numba
+requests

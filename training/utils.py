@@ -4,20 +4,11 @@ try:
     from random import randint
     from copy import deepcopy
     import logging
+    import numpy as np
+    from PIL import Image
+    from tqdm import tqdm
 except Exception as e:
     print("E001(utils)", e)
-    input()
-    quit()
-try:
-    import numpy as np
-except Exception as e:
-    print("E024(utils)", e)
-    input()
-    quit()
-try:
-    from PIL import Image
-except Exception as e:
-    print("E008(utils)", e)
     input()
     quit()
 
@@ -68,7 +59,7 @@ def shuffle(lst):
 def load_dataset():
     try:
         directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_png')
-        letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
+        letters = [ord(i) for i in ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']]
         numbers = []
         files = os.listdir(directory)
         goal_pred=[]
@@ -76,7 +67,8 @@ def load_dataset():
         x_train=[]
         y_train=[]
         font=0
-        for file in files:
+        print("1/3")
+        for file in tqdm(files):
             img = Image.open(os.path.join(directory, file))
             imageToMatrice = np.asarray(img)
 
@@ -111,8 +103,8 @@ def load_dataset():
             else:
                 y_train[numbers.index(result_str2)].append(-1)
 
-        print(language["Import25"],end='')
-        for i1 in range(len(x_train)):
+        print("2/3")
+        for i1 in tqdm(range(len(x_train))):
             for i2 in range(len(x_train[i1])):
                 if y_train[i1][i2] != -1:
                     for i3 in range(len(x_train[i1])):
@@ -127,10 +119,10 @@ def load_dataset():
         
         #return x_train, y_train
         logger.debug("Import50")
-        print(language["Import50"],end='')
         w = []
         z = []
-        for i in range(len(inp)):
+        print("3/3")
+        for i in tqdm(range(len(inp))):
             w.append(np.reshape(inp[i].ravel(), (-1, 1)).astype(np.float32))
             z.append(np.reshape(goal_pred[i].ravel(), (-1, 1)).astype(np.float32))
         #inp = np.array(w)

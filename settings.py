@@ -2,6 +2,7 @@ try:
     import os
     import json
     import logging
+    from colorama import Fore
 except Exception as e:
     print("E001", e)
     input()
@@ -37,16 +38,6 @@ try:
     directory = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(os.path.join(directory, 'training', 'input')):
         os.makedirs(os.path.join(directory, 'training', 'input'))
-    if not os.path.exists(os.path.join(directory, 'training', 'output')):
-        os.makedirs(os.path.join(directory, 'training', 'output'))
-    if not os.path.exists(os.path.join(directory, 'training', 'out_png')):
-        os.makedirs(os.path.join(directory, 'training', 'out_png'))
-    if not os.path.exists(os.path.join(directory, 'training', 'log')):
-        os.makedirs(os.path.join(directory, 'training', 'log'))
-
-    if not os.path.exists(os.path.join(directory, 'usage', 'models')):
-        os.makedirs(os.path.join(directory, 'usage', 'models'))
-
     logger.debug("create folders done")
     
     directoryToOther = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'other')
@@ -57,7 +48,7 @@ try:
             for i in range(len(languages)):
                 with open(os.path.join(directoryToOther, 'languages', languages[i]), encoding='utf-8') as f:
                     text = json.load(f)['ChooseLanguage']
-                strq += '[' + languages[i].removesuffix('.json') + ']' + text + '\n'
+                strq += '[' + Fore.GREEN + languages[i].removesuffix('.json') + Fore.RESET + ']' + text + '\n'
             strq += '>>>'
         except Exception as err:
                 logger.error('E012',exc_info=True)
@@ -81,8 +72,10 @@ try:
                 textFile["Settings"]={}
                 #textFile["Settings"]["directoryToAI_Font_Generator"] = directory
                 #textFile["Settings"]["directoryToFFpython"] = directoryToFFpython
-                textFile["Settings"]["version"] = "0.4.0"
-                textFile["Settings"]["modelVersion"] = "1"
+                textFile["Settings"]["version"] = "0.5.0"
+                textFile["Settings"]["modelVersion"] = 1
+                textFile["Settings"]["modelPixelsImg"] = [35, 35]
+                textFile["Settings"]["linkToConfig"] = "https://huggingface.co/Morkovka21Vek/AI_Font_Generator/raw/main/config.json"
                 file = json.dumps(textFile, ensure_ascii=False, indent=4)
                 directoryToTrain = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'training')
                 with open(os.path.join(directoryToTrain, 'settings.json'), 'w', encoding='utf-8') as f:
@@ -101,7 +94,7 @@ try:
             for i in range(len(languages)):
                 with open(os.path.join(directoryToOther, 'languages', languages[i]), encoding='utf-8') as f:
                     text = json.load(f)['LanguageError']
-                strq += '[' + languages[i].removesuffix('.json') + ']' + text + '\n'
+                strq += '[' + Fore.GREEN + languages[i].removesuffix('.json') + Fore.RESET + ']' + text + '\n'
             #print(strq)
             print(strq)
 except Exception as err:

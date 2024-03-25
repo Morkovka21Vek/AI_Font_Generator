@@ -2,35 +2,24 @@ try:
     import os
     import json
     import logging
-except Exception as e:
-    print("E001", e)
-    input()
-    quit()
-try:
     import numpy as np
+    from PIL import Image
+    from tqdm import tqdm
+    from colorama import Fore
+    import requests
 except Exception as e:
-    print("E024", e)
+    try:
+        print(Fore.RED+"E001"+Fore.RESET, e)#Fore.RED+language["ErrorNumber"]+Fore.RESET
+    except:
+        print("E001", e)
     input()
     quit()
 try:
     import utils
 except Exception as e:
-    print("E025", e)
+    print(Fore.RED+"E025"+Fore.RESET, e)
     input()
     quit()
-try:
-    from PIL import Image
-except Exception as e:
-    print("E008", e)
-    input()
-    quit()
-try:
-    from tqdm import tqdm
-except Exception as e:
-    print("E026", e)
-    input()
-    quit()
-
 try:
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
@@ -46,7 +35,7 @@ try:
     console_handler.setFormatter(formatter)
     file_handler.setFormatter(formatter)
 except Exception as e:
-    print("E003", e)
+    print(Fore.RED+"E003"+Fore.RESET, e)
     input()
     quit()
 
@@ -60,11 +49,11 @@ def sigmoid(num):
 
 
 def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape, weights_input_to_hidden):
-    letters = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']
-    tqdmrange = tqdm(range(len(inp_const)*len(letters)))
+    letters = [ord(i) for i in ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']]
+    tqdmRange = tqdm(range(len(inp_const)*len(letters)))
     for stLetter in range(len(inp_const)):
         for letter in range(len(letters)):
-            tqdmrange.update()
+            tqdmRange.update()
             #inp = np.reshape(inp_const[stLetter], (-1, 1))
             #layers=[]
             #layers.append(np.dot(np.append(inp, letter), weight[0]))
@@ -81,16 +70,6 @@ def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_outpu
                 logger.error("E027",exc_info=True)
                 input()
                 quit()
-            #print(pred)
-            #pred = (pred - pred.min())/(pred.max() - pred.min()).reshape((Xshape, int(np.shape(weight[len(weight)-1])[1]/Xshape)))
-            #pred2 = np.array([])
-            #for i in pred:
-            #    #print(i[0])
-            #    pred2 = np.append(pred2, i[0])
-            ##print(pred2)
-            #pred2 = pred2.reshape((Xshape, Xshape))
-            ##plt.imshow(pred2, interpolation='nearest')
-            ##plt.show()
             try:
                 pred = pred.reshape((Xshape, Yshape))
             except Exception as err:
@@ -110,34 +89,98 @@ def Start(inp_const, weight, Xshape, directoryOut, bias, weights_hidden_to_outpu
                 logger.error("E017",exc_info=True)
                 input()
                 quit()
+                
+def loadModels(settings, language):
+    try:
+        response = requests.get(settings["linkToConfig"])
+    except Exception as err:
+        logger.warning("E034",exc_info=True)
+        print(Fore.RED + language['ErrorConnect'] + Fore.RESET)
+        return
+    logger.info(response.status_code)
+    if not response.status_code == 200:
+        logger.warning("E034")
+        print(Fore.RED + language['ErrorConnect'] + Fore.RESET)
+        return
+    remoteModelsAll = response.json()["models"]
+    remoteModels=[]
+    for i in remoteModelsAll:
+        if i["modelVersion"] == settings["modelVersion"]:
+            remoteModels.append(i)
+    while True:
+        try:
+            strq=language["SelectModel"]
+            for i in range(len(remoteModels)):
+                strq += '[' + Fore.GREEN + str(i) + Fore.RESET + ']' + remoteModels[i]["name"] + '\n'
+            if len(remoteModels) == 0:
+                print(Fore.YELLOW+language["NoModelsToVersion"]+Fore.RESET)
+                return
+            else:
+                strq += Fore.GREEN+'>>>'+Fore.RESET
+        except Exception as err:
+            logger.error("E012",exc_info=True)
+            input()
+            quit()
+        try:
+            remoteModelsNum = int(input(strq))
+        except Exception as err:
+            logger.error("E013",exc_info=True)
+            input()
+            quit()
+        if remoteModelsNum >= 0 and remoteModelsNum < len(remoteModels):
+            break
+        else:
+            logger.warning('E014')
+            print(Fore.RED+language["ErrorNumber"]+Fore.RESET)
+    try:
+        responseModel = requests.get(remoteModels[remoteModelsNum]["link"], stream=True)
+        total_size = int(response.headers.get("content-length", 0))
+        block_size = 1024
+        
+    except Exception as err:
+        logger.warning("E034",exc_info=True)
+        print(Fore.RED + language['ErrorConnect'] + Fore.RESET)
+        return
+    if not responseModel.status_code == 200:
+        logger.warning("E034")
+        print(Fore.RED + language['ErrorConnect'] + Fore.RESET)
+        return
+    with tqdm(total=total_size, unit="B", unit_scale=True) as progress_bar:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', remoteModels[remoteModelsNum]["fullname"]), "wb") as file:
+            for data in responseModel.iter_content(block_size):
+                progress_bar.update(len(data))
+                file.write(data)
+    if total_size != 0 and progress_bar.n != total_size:
+        logger.error("Could not download file")
+    #with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', remoteModels[remoteModelsNum]["fullname"]), 'wb') as f:
+    #    f.write(responseModel.content)
     
 try:
     language = utils.load_language()
-    try:
-        directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_png')
-        directoryModel = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models')
-        if not os.path.exists(directoryModel):
-            os.makedirs(directoryModel)
-        directoryOut = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_main')
-        if not os.path.exists(directoryOut):
-            os.makedirs(directoryOut)
-    except Exception as err:
-        logger.error("E006",exc_info=True)
-        input()
-        quit()
-    try:
-        files = os.listdir(directory)
-        filesModel = os.listdir(directoryModel)
-    except Exception as err:
-        logger.error("E015",exc_info=True)
-        input()
-        quit()
+    settings = utils.load_settings()
+    directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_png')
+    directoryModel = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models')
+    if not os.path.exists(directoryModel):
+        os.makedirs(directoryModel)
+    directoryOut = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'out_main')
+    if not os.path.exists(directoryOut):
+        os.makedirs(directoryOut)
+    inpDownload = input(language["downloadOrContinue"]+Fore.GREEN+' >>>'+Fore.RESET)
+    if inpDownload == '1':
+        loadModels(settings, language)
+    files = os.listdir(directory)
+    filesModel = os.listdir(directoryModel)
     while True:
         try:
             strq=language["SelectFont"]
             for i in range(len(files)):
-                strq += '[' + str(i) + ']' + files[i] + '\n'
-            strq += '>>>'
+                strq += '[' + Fore.GREEN + str(i) + Fore.RESET + ']' + files[i] + '\n'
+            if len(files) == 0:
+                print(strq+Fore.RED+language["EmptyListWithEnter"]+Fore.RESET)
+                input()
+                quit()
+            else:
+                strq += Fore.GREEN+'>>>'+Fore.RESET
         except Exception as err:
             logger.error("E012",exc_info=True)
             input()
@@ -154,13 +197,18 @@ try:
             break
         else:
             logger.warning('E014')
-            print(language["ErrorNumber"])
+            print(Fore.RED+language["ErrorNumber"]+Fore.RESET)
     while True:
         try:
             strq=language["SelectModel"]
             for i in range(len(filesModel)):
-                strq += '[' + str(i) + ']' + filesModel[i] + '\n'
-            strq += '>>>'
+                strq += '[' + Fore.GREEN + str(i) + Fore.RESET + ']' + filesModel[i] + '\n'
+            if len(filesModel) == 0:
+                print(strq+Fore.RED+language["EmptyListWithEnter"]+Fore.RESET)
+                input()
+                quit()
+            else:
+                strq += Fore.GREEN+'>>>'+Fore.RESET
         except Exception as err:
             logger.error("E012",exc_info=True)
             input()
@@ -177,17 +225,12 @@ try:
             break
         else:
             logger.error('E014(model)')
-            print(language["ErrorNumber"])
-    try:
-        files = os.listdir(directory)
-    except Exception as err:
-        logger.error("E015",exc_info=True)
-        input()
-        quit()
+            print(Fore.RED+language["ErrorNumber"]+Fore.RESET)
+    files = os.listdir(directory)
     inp, weight, bias, weights_hidden_to_output, bias_hidden_to_output, Xshape, Yshape, weights_input_to_hidden = utils.load_dataset(directory, files, directoryModel)
-    #print(type(weight[1]))
+    print(Fore.GREEN+language["ImportDone"]+Fore.RESET)
     Start(inp, weight, Xshape, directoryOut, bias, weights_hidden_to_output, bias_hidden_to_output, Yshape, weights_input_to_hidden)
-    print(language["program_End"])
+    print(Fore.GREEN+language["program_End"]+Fore.RESET)
     logger.debug('Program End')
     input()
 except Exception as err:
