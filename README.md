@@ -1,4 +1,4 @@
-# <u>AI_Font_Generator</u><small>(Beta)</small> ![Static Badge](https://img.shields.io/badge/Version-0.5.0-green)  
+# <u>AI_Font_Generator</u><small>(Beta)</small> ![Static Badge](https://img.shields.io/badge/Version-0.4.1-green)  
 ![Static Badge](https://img.shields.io/badge/NoRelease-red)
 ## [EN]Creates the remaining symbols of the font based on the available AI.(translated by Yandex translator) 
      
