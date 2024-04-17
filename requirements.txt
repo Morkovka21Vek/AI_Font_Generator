@@ -3,5 +3,5 @@ numpy
 tqdm
 fonttools
 colorama
-numba
 requests
+safetensors

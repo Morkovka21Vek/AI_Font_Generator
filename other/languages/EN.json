@@ -15,7 +15,7 @@
     "Import50": "\rImport is completed by 50%",
     "Import75": "\rImport is completed by 75%",
     "ImportDone": "Import is successfully completed!",
-    "InputFilePath": "Please enter the path to the font file (you can drag it):",
+    "InputFilePath": "Please enter the path to the font file (you can drag it): ",
     "SelectModel": "Please choose which model you want to use (write the number):\n",
     "SelectNameForFont": "A font with this name already exists, if you want to replace it with a new one, then write Yes or yes or write a new font name.",
     "SelectNameForFontWithName": "The font with the name {} already exists if you want to replace it write yes or yes or write the name of the new font.",
@@ -24,5 +24,6 @@
     "downloadOrContinue": "Click Enter if you want to continue or write 1 (+Enter) to download the model.",
     "NoModelsToVersion": "Unfortunately, there are no models on your version yet.",
     "EmptyList": "This list is empty.",
+    "SelectAction": "Please choose what you want to do(Enter to go out):\n[{}] Change language. \n[{}] Download model.",
     "EmptyListWithEnter": "This list is empty. (Click Enter to go out)"
 }

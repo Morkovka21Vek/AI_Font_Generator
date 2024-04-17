@@ -67,7 +67,7 @@ def load_dataset():
         x_train=[]
         y_train=[]
         font=0
-        print("1/3")
+        logger.info("1/4")
         for file in tqdm(files):
             img = Image.open(os.path.join(directory, file))
             imageToMatrice = np.asarray(img)
@@ -103,7 +103,7 @@ def load_dataset():
             else:
                 y_train[numbers.index(result_str2)].append(-1)
 
-        print("2/3")
+        logger.info("2/4")
         for i1 in tqdm(range(len(x_train))):
             for i2 in range(len(x_train[i1])):
                 if y_train[i1][i2] != -1:
@@ -118,23 +118,21 @@ def load_dataset():
         #goal_pred_np = np.array(goal_pred)
         
         #return x_train, y_train
-        logger.debug("Import50")
         w = []
         z = []
-        print("3/3")
+        logger.info("3/4")
         for i in tqdm(range(len(inp))):
             w.append(np.reshape(inp[i].ravel(), (-1, 1)).astype(np.float32))
             z.append(np.reshape(goal_pred[i].ravel(), (-1, 1)).astype(np.float32))
         #inp = np.array(w)
         #goal_pred = np.array(z)
-        logger.debug("Import75")
-        print(language["Import75"],end='')
         numbers = np.arange(len(w))
         numbers = shuffle(numbers)
         #print(sort_by_indexes(w, numbers))
         inp = np.array(sort_by_indexes(w, numbers))
         goal_pred = np.array(sort_by_indexes(z, numbers))
         
+        logger.info("4/4")
         logger.debug("ImportDone")
         print(language["ImportDone"])
     except Exception as err:
