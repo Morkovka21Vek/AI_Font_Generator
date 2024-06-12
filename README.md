@@ -1,4 +1,4 @@
-# <u>**AI_Font_Generator**</u><small>(Alpha)</small> ![Static Badge](https://img.shields.io/badge/Версия-В_разработке!-red)  
+# <u>**AI Font Generator**</u><small>(Alpha)</small> ![Static Badge](https://img.shields.io/badge/Версия-В_разработке!-red)  
 
 <p align="center">
   <a href="https://github.com/Morkovka21Vek/AI_Font_Generator/releases"><img src="https://img.shields.io/github/downloads/Morkovka21Vek/AI_Font_Generator/total.svg?style=flat&logo=github" alt="Github All Releases"/></a>
