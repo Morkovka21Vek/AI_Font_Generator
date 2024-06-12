@@ -5,6 +5,7 @@ from util.downloadModel import createTable#, getModels, downloadModel
 from util.settings import save_settings, import_settings
 from util.generator import generate_font
 from util.font2svg import font2svg
+import util.createFolders
 import os
 
 settings = import_settings()
