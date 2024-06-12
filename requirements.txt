@@ -1,7 +1,4 @@
-pillow
 numpy
+gradio
 tqdm
-fonttools
-colorama
 requests
-safetensors
