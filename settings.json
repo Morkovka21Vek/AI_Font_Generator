@@ -3,5 +3,6 @@
     "DefaultSaveModel": null,
     "IS_DEBUG": false,
     "Visible_Settings": true,
-    "Visible_Models_Download": true
+    "Visible_Models_Download": true,
+    "IS_SHARE": false
 }
