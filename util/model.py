@@ -5,8 +5,11 @@ import html
 import gradio as gr
 #import time
 
-def getSaveModels(flag=False):
+def getSaveModels(settings, flag=False):
     x = os.listdir(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'models'))
+    if not settings["Is_Show_Extension_In_Models"]:
+        for i, n in enumerate(x):
+            x[i] = os.path.splitext(n)[0]
     if flag:
         x.append(None)
         return x
@@ -25,10 +28,8 @@ def getModels(url: str):#, logging):
     remoteModels = response.json()["models"]
     return remoteModels
 
-def downloadModel(url: str):#, name, extension):#remoteModel):#, logging):
+def downloadModel(url: str, model_Name: str):#, name, extension):#remoteModel):#, logging):
     #strq += '[' + Fore.GREEN + str(i) + Fore.RESET + ']' + remoteModels[i]["name"] +' ('+remoteModels[i]["date"]+')'+ '\n'
-    model_Name = url.split('/')[-1]
-    print(url, model_Name)
     try:
         responseModel = requests.get(url, stream=True)
         total_size = int(responseModel.headers.get("content-length", 0))
@@ -54,9 +55,8 @@ def downloadModel(url: str):#, name, extension):#remoteModel):#, logging):
     #with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'models', remoteModels[remoteModelsNum]["fullname"]), 'wb') as f:
     #    f.write(responseModel.content)
 
-def createTable(urlConfig: str):
+def createTable(urlConfig: str, settings):
     models = getModels(urlConfig)
-    #<!-- {time.time()} -->
     codeTable = f"""
     <table id="modelsTable">
         <thead>
@@ -65,17 +65,17 @@ def createTable(urlConfig: str):
                 <th>Дата</th>
                 <th>Вес</th>
                 <th>Ссылка</th>
-                <th>Ссылка</th>
+                <th>Ссылка текст</th>
             </tr>
         </thead>
         <tbody>"""
     for model in models:
-        name = model["name"]
-        date = model["date"]
         url = model["url"]
-        extension = model["extension"]
+        name = getNameFromUrl(False, url)
+        if not settings["Is_Show_Extension_In_Models"]:
+            name = os.path.splitext(name)[0]
+        date = model["date"]
         size = model["size"]
-        fullname = name+'.'+extension
         #x = "Hello"
         codeTable += f"""
             <tr>
@@ -89,6 +89,18 @@ def createTable(urlConfig: str):
         </tbody>
     </table>"""
     return codeTable
+
+def setInteractiveModelName(flag, name, url):
+    if flag:
+        return gr.Textbox(name, label="Название загружаемой модели", interactive=True)
+    else:
+        model_Name = getNameFromUrl(False, url)
+        return gr.Textbox(model_Name, label="Название загружаемой модели", interactive=False)
+
+def getNameFromUrl(flag, url):
+    if not flag:
+        model_Name = url.split('/')[-1]
+        return model_Name
 
 #print(createTable("https://huggingface.co/Morkovka21Vek/AI_Font_Generator/raw/main/config.json"))
 # <td><button onclick="downloadModel(this, '{html.escape(url)}', '{html.escape(name)}', '{html.escape(extension)}')" {"disabled=disabled" if existing else ""}>{"Установить" if not existing else "Установлено"}</button></td>

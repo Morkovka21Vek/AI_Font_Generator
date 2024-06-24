@@ -2,11 +2,12 @@ import os
 import json
 import gradio as gr
 
-def save_settings(Config_Url_textbox, selectDefaultSaveModel):
+def save_settings(Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models):
     standard_settings = import_settings()
     Settings = {
         "Config_Url": Config_Url_textbox,
         "DefaultSaveModel": selectDefaultSaveModel,
+        "Is_Show_Extension_In_Models": Is_Show_Extension_In_Models,
         "IS_DEBUG": standard_settings["IS_DEBUG"],
         "Visible_Settings": standard_settings["Visible_Settings"],
         "Visible_Models_Download": standard_settings["Visible_Models_Download"],
