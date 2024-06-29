@@ -7,19 +7,48 @@ from util.generator import generate_font
 from util.font2svg import font2svg
 import util.createFolders
 import os
+import logging
+
+def init_loger(name):
+    logger = logging.getLogger(name)
+    FORMATE = "%(asctime)s - %(name)s: %(funcName)s: %(lineno)d - %(levelname)s - %(message)s"
+    logger.setLevel(logging.DEBUG)
+    sh = logging.StreamHandler()
+    sh.setFormatter(logging.Formatter(FORMATE))
+    sh.setLevel(logging.DEBUG)
+    fh = logging.FileHandler(filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_log.log"), mode="a")
+    fh.setFormatter(logging.Formatter(FORMATE))
+    fh.setLevel(logging.DEBUG)
+    logger.addHandler(sh)
+    logger.addHandler(fh)
+    logger.info("Start logging")
+    
+
+init_loger("app")
+logger = logging.getLogger("app.app")
 
 settings = import_settings()
+logger.info(f"settings: {str(settings)}")
 
+def checkLogLimit(limit):
+    if limit == -1:
+        return False
+    size = os.path.getsize("app_log.log")/1048576
+    if size > limit:
+        return True
+    return False
 
 #<span style="color:blue">some *blue* text</span>
 with gr.Blocks(title="AI Font Generator") as demo:
     #gr.Markdown('# <span style="color:orange">**AI_Font_Generator**</span>')
-    gr.Markdown('# <span style="color:orange">AI Font Generator</span> <span style="color:red">(альфа)</span>')
+    with gr.Row():
+        gr.Markdown('# <span style="color:orange">AI Font Generator</span> <span style="color:red">(альфа)</span>')
+        maxLogSizeErrorMarkdown = gr.Markdown('## <span style="color:red">Лимит логов превышен!</span>', visible=checkLogLimit(settings["maxLogFileSize"]))
     with gr.Tab("Генерация"):
         with gr.Column():
             with gr.Row():
                 with gr.Column():
-                    File_Input_Svg = gr.File(file_count="multiple", file_types=["svg"], label="svg")
+                    File_Input_Svg = gr.File(file_count="multiple", file_types=(None if settings["IS_DEBUG"] else ["svg"]), label="svg")
                     with gr.Row():
                         Generate_Button = gr.Button("Генерировать", variant="primary")
                         download_Result_Button = gr.Button("📥", interactive=False, scale=0) #📥
@@ -41,7 +70,7 @@ with gr.Blocks(title="AI Font Generator") as demo:
     with gr.Tab("ШрифтВsvg"):
         with gr.Row():
             with gr.Column():
-                File_Input_Font = gr.File(file_count="single", file_types=["ttf", "otf"], label="otf, ttf")
+                File_Input_Font = gr.File(file_count="single", file_types=(None if settings["IS_DEBUG"] else ["ttf", "otf"]), label="otf, ttf")
                 Generate_Svg_Button = gr.Button("Генерировать", variant="primary")
             with gr.Column():
                 Save_Svg_Button = gr.Button("Сохранить",interactive=False)
@@ -57,6 +86,7 @@ with gr.Blocks(title="AI Font Generator") as demo:
         Config_Url_textbox = gr.Textbox(label="Ссылка на конфиг по умолчанию", interactive=True, value=settings["Config_Url"])
         selectDefaultSaveModel = gr.Dropdown(getSaveModels(settings, True), interactive=True, value=settings["DefaultSaveModel"], label="Выбор модели по умолчанию")
         Is_Show_Extension_In_Models = gr.Checkbox(value=settings["Is_Show_Extension_In_Models"], interactive=True, label="Отображать расширение моделей")
+        maxLogFileSize = gr.Number(settings["maxLogFileSize"], label="Максимальный размер файла логов в МБ (НЕ УДАЛЯЕТСЯ, ТОЛЬКО ОПОВЕЩЕНИЕ)(-1 - отключить)", interactive=True, minimum=-1, step=0.1)
         save_settings_button = gr.Button("Сохранить", variant="primary")
         
     with gr.Tab("Модели", visible=settings["Visible_Models_Download"]):
@@ -83,10 +113,10 @@ with gr.Blocks(title="AI Font Generator") as demo:
 
     Generate_Button.click(generate_font, inputs=File_Input_Svg, outputs=generate_image_outputs)
     random_seed_button.click(lambda: int(random.randrange(4294967294)), outputs=seed_number)
-    save_settings_button.click(save_settings, inputs=[Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models])
+    save_settings_button.click(save_settings, inputs=[Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models, maxLogFileSize])
     reset_url_button.click(lambda: settings["Config_Url"], outputs=url_text_models)
     download_config_button.click(lambda url: createTable(url, settings), inputs=url_text_models, outputs=models_table_html)
-    Generate_Svg_Button.click(font2svg, inputs=File_Input_Font, outputs=[Save_Svg_Button, Sent_Svg_To_Generate_Button])
+    Generate_Svg_Button.click(font2svg, inputs=File_Input_Font, outputs=[Save_Svg_Button, Sent_Svg_To_Generate_Button, font2svg_image_outputs])
     get_var_list_button.click(lambda: str(globals()), outputs=var_list_Md)
     download_model_button.click(downloadModel, inputs=[url_download_model, name_download_model])
     checkBox_name_download_model.input(setInteractiveModelName, inputs=[checkBox_name_download_model, name_download_model, url_download_model], outputs=name_download_model)
