@@ -18,7 +18,7 @@ def init_loger(name):
     sh.setLevel(logging.DEBUG)
     fh = logging.FileHandler(filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_log.log"), mode="a")
     fh.setFormatter(logging.Formatter(FORMATE))
-    fh.setLevel(logging.DEBUG)
+    fh.setLevel(logging.INFO)
     logger.addHandler(sh)
     logger.addHandler(fh)
     logger.info("Start logging")
