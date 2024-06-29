@@ -40,7 +40,6 @@ def checkLogLimit(limit):
 
 #<span style="color:blue">some *blue* text</span>
 with gr.Blocks(title="AI Font Generator") as demo:
-    #gr.Markdown('# <span style="color:orange">**AI_Font_Generator**</span>')
     with gr.Row():
         gr.Markdown('# <span style="color:orange">AI Font Generator</span> <span style="color:red">(альфа)</span>')
         maxLogSizeErrorMarkdown = gr.Markdown('## <span style="color:red">Лимит логов превышен!</span>', visible=checkLogLimit(settings["maxLogFileSize"]))
@@ -76,11 +75,6 @@ with gr.Blocks(title="AI Font Generator") as demo:
                 Save_Svg_Button = gr.Button("Сохранить",interactive=False)
                 Sent_Svg_To_Generate_Button = gr.Button("Отправить на генерацию", interactive=False)
         font2svg_image_outputs = gr.Gallery(label="Выходные изображения")
-                
-        #gr.Group(gr.Text("Hello"),gr.Image())
-        #group_Imgs_Font2Svg = gr.Group(gr.Image())
-                #Out_Imgs_Font2Svg = []
-                #gr.Image()
     
     with gr.Tab("Настройки", visible=settings["Visible_Settings"]):
         Config_Url_textbox = gr.Textbox(label="Ссылка на конфиг по умолчанию", interactive=True, value=settings["Config_Url"])
@@ -90,7 +84,6 @@ with gr.Blocks(title="AI Font Generator") as demo:
         save_settings_button = gr.Button("Сохранить", variant="primary")
         
     with gr.Tab("Модели", visible=settings["Visible_Models_Download"]):
-        #gr.Markdown('## <span style="color:red">Находится в разработке!</span>')
         with gr.Group():
             url_download_model = gr.Textbox(label="ссылка на модель", interactive=True)
             download_model_button = gr.Button("Скачать", variant="primary")
@@ -102,9 +95,7 @@ with gr.Blocks(title="AI Font Generator") as demo:
                 url_text_models = gr.Textbox(label="ссылка на конфиг", interactive=True, value=settings["Config_Url"])
                 reset_url_button = gr.Button("сбросить", scale=0)
             download_config_button = gr.Button("Показать", variant="primary")
-        #models_data_frame = gr.Dataframe(headers=["Название", ""], interactive=False)
         models_table_html = gr.HTML()
-        #models_drop_down = gr.Dropdown()
         
     Debug_Tab = gr.Tab("Отладка", visible = settings["IS_DEBUG"])
     with Debug_Tab:
