@@ -5,7 +5,7 @@
   <a href="https://github.com/Morkovka21Vek/AI_Font_Generator/releases"><img src="https://img.shields.io/github/release/Morkovka21Vek/AI_Font_Generator.svg?style=flat&logo=github" alt="GitHub release"/></a>
 </p>
 <p align="center">
-  <a href="https://huggingface.co/Morkovka21Vek/AI_Font_Generator"><img src="https://img.shields.io/badge/Huggingface-models-yellow" alt="huggingface models"/></a>
+  <a href="https://huggingface.co/Morkovka21Vek/AI_Font_Generator"><img src="https://img.shields.io/badge/🤗Huggingface-models-yellow" alt="huggingface models"/></a>
 </p>
 
 ## Создает остальные символы шрифта на основе имеющихся с помощью ИИ.  
