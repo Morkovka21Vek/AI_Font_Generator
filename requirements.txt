@@ -3,6 +3,6 @@ gradio
 tqdm
 requests
 fonttools
-freetype
+freetype-py
 svgpathtools
-PIL
+Pillow
