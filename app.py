@@ -33,7 +33,7 @@ logger.info(f"settings: {str(settings)}")
 def checkLogLimit(limit):
     if limit == -1:
         return False
-    size = os.path.getsize("app_log.log")/1048576
+    size = os.path.getsize(os.path.join(os.path.dirname(os.path.abspath(__file__)), "app_log.log"))/1048576
     if size > limit:
         return True
     return False
