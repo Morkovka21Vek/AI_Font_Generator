@@ -4,7 +4,7 @@ import random
 from util.model import createTable, downloadModel, getSaveModels, setInteractiveModelName, getNameFromUrl#, getModels
 from util.settings import save_settings, import_settings
 from util.generator import generate_font
-from util.font2svg import font2svg
+from util.font2img import font2img, saveImages
 import util.createFolders
 import os
 import logging
@@ -42,7 +42,7 @@ def checkLogLimit(limit):
 with gr.Blocks(title="AI Font Generator") as demo:
     with gr.Row():
         gr.Markdown('# <span style="color:orange">AI Font Generator</span> <span style="color:red">(альфа)</span>')
-        maxLogSizeErrorMarkdown = gr.Markdown('## <span style="color:red">Лимит логов превышен!</span>', visible=checkLogLimit(settings["maxLogFileSize"]))
+        gr.Markdown('## <span style="color:red">Лимит логов превышен!</span>', visible=checkLogLimit(settings["maxLogFileSize"]))
     with gr.Tab("Генерация"):
         with gr.Column():
             with gr.Row():
@@ -66,21 +66,25 @@ with gr.Blocks(title="AI Font Generator") as demo:
             
             generate_image_outputs = gr.Gallery(label="Выходные изображения")
                 
-    with gr.Tab("ШрифтВsvg"):
+    with gr.Tab("ШрифтВизобр"):
         with gr.Row():
             with gr.Column():
                 File_Input_Font = gr.File(file_count="single", file_types=(None if settings["IS_DEBUG"] else ["ttf", "otf"]), label="otf, ttf")
-                Generate_Svg_Button = gr.Button("Генерировать", variant="primary")
+                Generate_font2img_Button = gr.Button("Генерировать", variant="primary")
             with gr.Column():
-                Save_Svg_Button = gr.Button("Сохранить",interactive=False)
-                Sent_Svg_To_Generate_Button = gr.Button("Отправить на генерацию", interactive=False)
-        font2svg_image_outputs = gr.Gallery(label="Выходные изображения")
+                font2img_checkBox_mode = gr.Radio(["png", "svg"], label="Преобразовать в")
+                Save_font2img_Button = gr.Button("Сохранить",interactive=False)
+                Download_font2img_Button = gr.DownloadButton("Загрузить",interactive=True,visible=False)
+                Save_Images_font2img_Type = gr.Radio(["png", "jpg"], label="Расширение сохраняемых картинок", value="png")
+                Sent_font2img_To_Generate_Button = gr.Button("Отправить на генерацию", interactive=False)
+        font2svg_image_outputs = gr.Gallery(label="Выходные изображения", format="png", columns=7)
     
     with gr.Tab("Настройки", visible=settings["Visible_Settings"]):
         Config_Url_textbox = gr.Textbox(label="Ссылка на конфиг по умолчанию", interactive=True, value=settings["Config_Url"])
         selectDefaultSaveModel = gr.Dropdown(getSaveModels(settings, True), interactive=True, value=settings["DefaultSaveModel"], label="Выбор модели по умолчанию")
         Is_Show_Extension_In_Models = gr.Checkbox(value=settings["Is_Show_Extension_In_Models"], interactive=True, label="Отображать расширение моделей")
-        maxLogFileSize = gr.Number(settings["maxLogFileSize"], label="Максимальный размер файла логов в МБ (НЕ УДАЛЯЕТСЯ, ТОЛЬКО ОПОВЕЩЕНИЕ)(-1 - отключить)", interactive=True, minimum=-1, step=0.1)
+        maxLogFileSize = gr.Number(settings["maxLogFileSize"], label="Максимальный размер файла логов в МБ (НЕ УДАЛЯЕТСЯ, ТОЛЬКО ОПОВЕЩЕНИЕ)(0 - отключить)", interactive=True, minimum=0, step=0.1)
+        PngFontSize_Settings_slider = gr.Slider(1, 200, value=settings["PngFontSize"], step=1, label="Размер шрифта при экспорте в png во вкладке ШрифтВизобр")
         save_settings_button = gr.Button("Сохранить", variant="primary")
         
     with gr.Tab("Модели", visible=settings["Visible_Models_Download"]):
@@ -104,14 +108,16 @@ with gr.Blocks(title="AI Font Generator") as demo:
 
     Generate_Button.click(generate_font, inputs=File_Input_Svg, outputs=generate_image_outputs)
     random_seed_button.click(lambda: int(random.randrange(4294967294)), outputs=seed_number)
-    save_settings_button.click(save_settings, inputs=[Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models, maxLogFileSize])
+    save_settings_button.click(save_settings, inputs=[Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models, maxLogFileSize, PngFontSize_Settings_slider])
     reset_url_button.click(lambda: settings["Config_Url"], outputs=url_text_models)
     download_config_button.click(lambda url: createTable(url, settings), inputs=url_text_models, outputs=models_table_html)
-    Generate_Svg_Button.click(font2svg, inputs=File_Input_Font, outputs=[Save_Svg_Button, Sent_Svg_To_Generate_Button, font2svg_image_outputs])
+    Generate_font2img_Button.click(lambda *args: font2img(*args, settings), inputs=[File_Input_Font, font2img_checkBox_mode], outputs=[Save_font2img_Button, Download_font2img_Button, Sent_font2img_To_Generate_Button, font2svg_image_outputs])
     get_var_list_button.click(lambda: str(globals()), outputs=var_list_Md)
     download_model_button.click(downloadModel, inputs=[url_download_model, name_download_model])
     checkBox_name_download_model.input(setInteractiveModelName, inputs=[checkBox_name_download_model, name_download_model, url_download_model], outputs=name_download_model)
     url_download_model.input(getNameFromUrl, inputs=[checkBox_name_download_model, url_download_model], outputs=name_download_model)
+    Save_font2img_Button.click(saveImages, inputs=[Save_Images_font2img_Type, font2img_checkBox_mode, File_Input_Font], outputs=[Save_font2img_Button, Download_font2img_Button])
+    Save_Images_font2img_Type.input(lambda: [gr.Button("Сохранить",interactive=True, visible=True), gr.DownloadButton("Загрузить",interactive=True, visible=False)], outputs=[Save_font2img_Button, Download_font2img_Button])
 
 if settings["IS_SHARE"]:
     demo.launch(share=True)

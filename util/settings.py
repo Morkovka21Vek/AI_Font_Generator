@@ -4,13 +4,14 @@ import gradio as gr
 import logging
 logger = logging.getLogger("app.util.settings")
 
-def save_settings(Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models, maxLogFileSize):
+def save_settings(Config_Url_textbox, selectDefaultSaveModel, Is_Show_Extension_In_Models, maxLogFileSize, PngFontSize_Settings_slider):
     standard_settings = import_settings()
     Settings = {
         "Config_Url": Config_Url_textbox,
         "DefaultSaveModel": selectDefaultSaveModel,
         "Is_Show_Extension_In_Models": Is_Show_Extension_In_Models,
         "maxLogFileSize": maxLogFileSize,
+        "PngFontSize": PngFontSize_Settings_slider,
         "IS_DEBUG": standard_settings["IS_DEBUG"],
         "Visible_Settings": standard_settings["Visible_Settings"],
         "Visible_Models_Download": standard_settings["Visible_Models_Download"],

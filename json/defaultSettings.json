@@ -3,6 +3,7 @@
     "DefaultSaveModel": null,
     "Is_Show_Extension_In_Models": false,
     "maxLogFileSize": -1,
+    "PngFontSize": 50,
     "IS_DEBUG": false,
     "Visible_Settings": true,
     "Visible_Models_Download": true,
