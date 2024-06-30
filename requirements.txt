@@ -2,7 +2,7 @@ numpy
 gradio
 tqdm
 requests
-fontTools
+fonttools
 freetype
 svgpathtools
 PIL
