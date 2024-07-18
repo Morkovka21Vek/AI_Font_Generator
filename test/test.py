@@ -1,48 +1,47 @@
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.interpolate import interp1d
+from scipy.special import comb
+from svg.path import parse_path
+from xml.dom import minidom
+from matplotlib import pyplot as plt
+from scipy.interpolate import make_interp_spline
 
-# Функция для построения квадратичной кривой Безье
-def build_bezier_curve(control_points):
-    x = control_points[:, 0]
-    y = control_points[:, 1]
+def bernstein_poly(i, n, t):
+    return comb(n, i) * ( t**(n-i) ) * (1 - t)**i
 
-    t = np.linspace(0, 1, 100)
-    curve_x = np.power(1 - t, 2) * x[0] + 2 * (1 - t) * t * x[1] + t * t * x[2]
-    curve_y = np.power(1 - t, 2) * y[0] + 2 * (1 - t) * t * y[1] + t * t * y[2]
 
-    return curve_x, curve_y
+def bezier_curve(points, nTimes=1000):
+    nPoints = len(points)
+    xPoints = np.array([p[0] for p in points])
+    yPoints = np.array([p[1] for p in points])
 
-# Функция для нахождения контрольных точек квадратичной кривой Безье
-def find_control_points(points):
-    x = points[:, 0]
-    y = points[:, 1]
+    t = np.linspace(0.0, 1.0, nTimes)
 
-    t = np.linspace(0, 1, len(points))
-    x_polynomial = interp1d(t, x, kind='cubic')
-    y_polynomial = interp1d(t, y, kind='cubic')
+    polynomial_array = np.array([ bernstein_poly(i, nPoints-1, t) for i in range(0, nPoints)   ])
 
-    t_new = np.linspace(0, 1, 3)
-    control_points_x = np.array([x_polynomial(t_) for t_ in t_new]).reshape((3, 1))
-    control_points_y = np.array([y_polynomial(t_) for t_ in t_new]).reshape((3, 1))
+    xvals = np.dot(xPoints, polynomial_array)
+    yvals = np.dot(yPoints, polynomial_array)
 
-    control_points = np.hstack((control_points_x, control_points_y))
-    return control_points
+    return xvals, yvals
 
-# Зададим наши точки
-points = np.array([[0, 0], [1, 1], [2, 1], [2, 2]])
 
-# Найдем контрольные точки
-control_points = find_control_points(points)
-print("Контрольные точки:", control_points)
+if __name__ == "__main__":
+    points = [[0, 0], [1, 1], [2, 3]]
+    xpoints = [p[0] for p in points]
+    ypoints = [p[1] for p in points]
 
-# Построим кривую Безье
-curve_x, curve_y = build_bezier_curve(control_points)
-print(curve_x, curve_y)
-# Визуализация
-plt.plot(curve_x, curve_y)
-# plt.plot(points[0], points[1])
-# plt.plot(points[1], points[2])
-plt.plot(points[:, 0], points[:, 1], "ro")
-
-plt.show()
+    xvals, yvals = bezier_curve(points, nTimes=1000)
+    p0 = np.array([xvals[0], yvals[0]])
+    p3 = np.array([xvals[-1], yvals[-1]])
+    t = np.linspace(0, 1, len(xvals))
+    spl = make_interp_spline(t, np.c_[xvals, yvals], k=3)
+    t_mid = 0.5
+    p1 = spl(t_mid)
+    p2 = 1 * spl(t_mid) - spl(2 * t_mid)
+    xvals1, yvals1 = bezier_curve([p0, p2, p3], nTimes=1000)
+    # xvals3, yvals3 = bezier_curve(path3, nTimes=3)
+    plt.plot(xvals, yvals)
+    plt.plot(xvals1, yvals1, "g")
+    plt.plot(xpoints, ypoints, "ro")
+    # plt.plot(p1[0], p1[1], "bo")
+    plt.plot(p2[0], p2[1], "bo")
+    plt.show()

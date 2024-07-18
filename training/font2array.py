@@ -2,9 +2,12 @@ from fontTools.ttLib import TTFont
 from freetype import Face, FT_Curve_Tag, FT_Curve_Tag_On, FT_Vector
 
 import os
-# import logging
 import string
 from tqdm import tqdm
+from svg.path import parse_path
+import xml.etree.ElementTree as ET
+from matplotlib import pyplot as plt
+import numpy as np
 
 import sys
 sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -18,13 +21,36 @@ desiredLetters = string.ascii_uppercase + cyrillic_lower_letters.upper()
 desiredLetters = [ord(i) for i in desiredLetters]
 
 
+def extract_path(name, freq, scale=1, x_offset=0, y_offset=0):
+    doc = ET.fromstring(name)
+    # path_strings = [path.attrib['d'] for path in doc.find('path')]#[path.getAttribute('d') for path in doc.getElementsByTagName('path')]
+    path_strings = [path.attrib['d'] for path in doc.findall('.//{http://www.w3.org/2000/svg}path')]
+
+    path = []
+    for path_string in path_strings:
+        items = parse_path(path_string)
+        step = len(items)*len(path_strings)/freq
+        for item in items:
+            for i in range(int(1/step)):
+                pos = item.point(step*i)
+                path.append([(pos.real+x_offset)*scale, (pos.imag+y_offset)*scale])
+    return path
+
 def font2img(pathToFont: str, fontName: str):
+    paths = {}
     font_obg = TTFont(pathToFont)
     m_dict = font_obg.getBestCmap()
     converter = TtfSvgConverter(ttfPath=pathToFont)
     for key, text in m_dict.items():
         if key in desiredLetters:
-            converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"))
+            xml = converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"))
+            path = extract_path(xml, 100)
+            paths[str(key)] = path
+            # xpoints = [p[0] for p in path]
+            # ypoints = [p[1] for p in path]
+            # plt.plot(xpoints, ypoints, "ro")
+            # plt.show()
+    np.savez(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDatasetArray", f"{fontName}.npz"), **paths)
         
 # https://gist.github.com/GaryLee/04dd0537fc501724b0f3af329864bcf1 <3
 class TtfSvgConverter:
@@ -109,13 +135,8 @@ class TtfSvgConverter:
             #1-save fill
             #2-nosave stroke
             #3-nosave fill
-            wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output, mode=1)
-            # with open(output, "r") as f:
-            #     text = f.read().replace(' fill="none" stroke="#000000" ', '').split("stroke-width")[0]+"/>\n</svg>"
-                
-            # with open(output, "w") as f:
-            #     f.write(text)
-            break 
+            return wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output, mode=3)
+            # break 
         
 if __name__ == "__main__":
     folderFontPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingFonts")

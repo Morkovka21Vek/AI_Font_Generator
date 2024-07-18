@@ -2,6 +2,9 @@
 **/flagged
 **/output
 **/cache
+**/trainingFonts
+**/trainingDataset
+**/logs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

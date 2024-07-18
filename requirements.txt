@@ -4,5 +4,5 @@ tqdm
 requests
 fonttools
 freetype-py
-svgpathtools
 Pillow
+svg.path

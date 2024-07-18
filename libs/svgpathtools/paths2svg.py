@@ -100,7 +100,7 @@ def disvg(paths=None, colors=None, filename=None, stroke_widths=None,
           mindim=600, dimensions=None, viewbox=None, text=None,
           text_path=None, font_size=None, attributes=None,
           svg_attributes=None, svgwrite_debug=False,
-          paths2Drawing=False, baseunit='px'):
+          paths2Drawing=False, baseunit='px', mode=0):
     """Creates (and optionally displays) an SVG file.
 
     REQUIRED INPUTS:
@@ -413,9 +413,15 @@ def disvg(paths=None, colors=None, filename=None, stroke_widths=None,
     dwg.save()
 
     # re-open the svg, make the xml pretty, and save it again
-    xmlstring = md_xml_parse(filename).toprettyxml().replace(' fill="none" stroke="#000000" ', '').split("stroke-width")[0]+"/>\n</svg>"
-    with open(filename, 'w') as f:
-        f.write(xmlstring)
+    if mode == 0 or mode == 2:
+        xmlstring = md_xml_parse(filename).toprettyxml()
+    else:
+        xmlstring = md_xml_parse(filename).toprettyxml().replace(' fill="none" stroke="#000000" ', '').split("stroke-width")[0]+"/>\n</svg>"
+    if mode == 0 or mode == 1:
+        with open(filename, 'w') as f:
+            f.write(xmlstring)
+    else:
+        return xmlstring
 
     # try to open in web browser
     if openinbrowser:
@@ -432,7 +438,7 @@ def wsvg(paths=None, colors=None, filename=None, stroke_widths=None,
          mindim=600, dimensions=None, viewbox=None, text=None,
          text_path=None, font_size=None, attributes=None,
          svg_attributes=None, svgwrite_debug=False,
-         paths2Drawing=False, baseunit='px'):
+         paths2Drawing=False, baseunit='px', mode=0):
     """Create SVG and write to disk.
 
     Note: This is identical to `disvg()` except that `openinbrowser`
@@ -451,7 +457,7 @@ def wsvg(paths=None, colors=None, filename=None, stroke_widths=None,
                  text_path=text_path, font_size=font_size,
                  attributes=attributes, svg_attributes=svg_attributes,
                  svgwrite_debug=svgwrite_debug,
-                 paths2Drawing=paths2Drawing, baseunit=baseunit)
+                 paths2Drawing=paths2Drawing, baseunit=baseunit, mode=mode)
     
     
 def paths2Drawing(paths=None, colors=None, filename=None,

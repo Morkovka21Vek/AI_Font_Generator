@@ -1,13 +1,18 @@
 import gradio as gr
 from fontTools.ttLib import TTFont
 from freetype import Face, FT_Curve_Tag, FT_Curve_Tag_On, FT_Vector
-from svgpathtools import (wsvg, Line, CubicBezier, QuadraticBezier, Path)
 from PIL import Image, ImageFont, ImageDraw
 import os
 import io
 import zipfile
 import shutil
 import logging
+import sys
+sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# https://github.com/mathandy/svgpathtools
+from libs.svgpathtools import (wsvg, Line, CubicBezier, QuadraticBezier, Path)
+
 logger = logging.getLogger("app.util.font2img")
 
 convertImages = []
@@ -28,6 +33,8 @@ def font2img(pathToFont: str, mode: str, settings):
     font_obg = TTFont(pathToFont)
     m_dict = font_obg.getBestCmap()
     if mode == "svg":
+        shutil.rmtree(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache'))
+        os.makedirs(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'cache', 'svgFont2img'))
         converter = TtfSvgConverter(ttfPath=pathToFont)
         for key, text in m_dict.items():
             converter.generate(text, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "cache", "svgFont2img", str(key)+".svg"))
@@ -168,10 +175,15 @@ class TtfSvgConverter:
                 'viewBox': viewbox,
                 'preserveAspectRatio': 'xMidYMid meet'
             }
-            wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output)
-            with open(output, "r") as f:
-                text = f.read().replace(' fill="none" stroke="#000000" ', '').split("stroke-width")[0]+"/>\n</svg>"
+            #MODE
+            #0-save stroke
+            #1-save fill
+            #2-nosave stroke
+            #3-nosave fill
+            wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output, mode=1)
+            # with open(output, "r") as f:
+            #     text = f.read().replace(' fill="none" stroke="#000000" ', '').split("stroke-width")[0]+"/>\n</svg>"
                 
-            with open(output, "w") as f:
-                f.write(text)
+            # with open(output, "w") as f:
+            #     f.write(text)
             break 
