@@ -5,7 +5,7 @@
 **/trainingFonts
 **/trainingDataset
 **/logs
-trainingDatasetArray
+**/trainingDatasetArray
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
