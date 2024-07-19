@@ -6,7 +6,7 @@ import string
 from tqdm import tqdm
 from svg.path import parse_path
 import xml.etree.ElementTree as ET
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 import numpy as np
 
 import sys
@@ -36,7 +36,7 @@ def extract_path(name, freq, scale=1, x_offset=0, y_offset=0):
                 path.append([(pos.real+x_offset)*scale, (pos.imag+y_offset)*scale])
     return path
 
-def font2img(pathToFont: str, fontName: str):
+def font2arr(pathToFont: str, fontName: str):
     paths = {}
     font_obg = TTFont(pathToFont)
     m_dict = font_obg.getBestCmap()
@@ -45,6 +45,8 @@ def font2img(pathToFont: str, fontName: str):
         if key in desiredLetters:
             xml = converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"))
             path = extract_path(xml, 100)
+            path = np.array(path)
+            path = (path-np.min(path))/(np.max(path)-np.min(path))
             paths[str(key)] = path
             # xpoints = [p[0] for p in path]
             # ypoints = [p[1] for p in path]
@@ -144,4 +146,4 @@ if __name__ == "__main__":
     fullListFonts = [os.path.join(folderFontPath, i) for i in listFonts]
     # print(fullListFonts)
     for fontPath, fontName in tqdm(zip(fullListFonts, listFonts), total=len(fullListFonts)):
-        font2img(fontPath, fontName.rsplit('.', 1)[0])
+        font2arr(fontPath, fontName.rsplit('.', 1)[0])
