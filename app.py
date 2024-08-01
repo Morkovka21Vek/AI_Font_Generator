@@ -84,7 +84,7 @@ with gr.Blocks(title="AI Font Generator") as demo:
         selectDefaultSaveModel = gr.Dropdown(getSaveModels(settings, True), interactive=True, value=settings["DefaultSaveModel"], label="Выбор модели по умолчанию")
         Is_Show_Extension_In_Models = gr.Checkbox(value=settings["Is_Show_Extension_In_Models"], interactive=True, label="Отображать расширение моделей")
         maxLogFileSize = gr.Number(settings["maxLogFileSize"], label="Максимальный размер файла логов в МБ (НЕ УДАЛЯЕТСЯ, ТОЛЬКО ОПОВЕЩЕНИЕ)(0 - отключить)", interactive=True, minimum=0, step=0.1)
-        PngFontSize_Settings_slider = gr.Slider(1, 200, value=settings["PngFontSize"], step=1, label="Размер шрифта при экспорте в png во вкладке ШрифтВизобр")
+        PngFontSize_Settings_slider = gr.Slider(1, 200, value=settings["PngFontSize"], step=1, label="Размер шрифта при экспорте в png во вкладке ШрифтВизобр (в пикселях)")
         save_settings_button = gr.Button("Сохранить", variant="primary")
         
     with gr.Tab("Модели", visible=settings["Visible_Models_Download"]):
