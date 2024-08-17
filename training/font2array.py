@@ -16,9 +16,6 @@ sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from util.TtfSvgConverter import TtfSvgConverter
 
-# https://github.com/mathandy/svgpathtools
-from libs.svgpathtools import (wsvg, Line, CubicBezier, QuadraticBezier, Path)
-
 cyrillic_lower_letters = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'
 desiredLetters = string.ascii_uppercase + cyrillic_lower_letters.upper()
 # desiredLetters = list(string.ascii_uppercase) + list(cyrillic_lower_letters.upper())
@@ -45,7 +42,7 @@ def extract_path(name, freq, scale=1, x_offset=0, y_offset=0):
             for i in range(int(freq/allItemsCount) + (1 if AddPointCount >= 0 else 0)):
                 pos = item.point(step*i)
                 path.append([(pos.real+x_offset)*scale, (pos.imag+y_offset)*scale])
-                if True:
+                if False:
                     pos2 = item.point(step*i+step/2)
                     path.append([(pos2.real+x_offset)*scale, (pos2.imag+y_offset)*scale])
     return path
@@ -59,7 +56,7 @@ def font2arr(pathToFont: str, fontName: str):
     converter = TtfSvgConverter(ttfPath=pathToFont)
     for key, text in m_dict.items():
         if key in desiredLetters:
-            xml = converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"), mode=3)
+            xml = converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"), mode=1)
             path = extract_path(xml, 100)
             path = np.array(path)
             path = (path-np.min(path))/(np.max(path)-np.min(path))

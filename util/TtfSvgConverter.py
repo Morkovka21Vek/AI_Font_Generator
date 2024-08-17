@@ -1,5 +1,6 @@
-from libs.svgpathtools import (wsvg, Line, CubicBezier, QuadraticBezier, Path)
+from svgpathtools import (wsvg, Line, CubicBezier, QuadraticBezier, Path)
 from freetype import Face, FT_Curve_Tag, FT_Curve_Tag_On, FT_Vector
+from svgwrite import Drawing
 
 # https://gist.github.com/GaryLee/04dd0537fc501724b0f3af329864bcf1 <3
 class TtfSvgConverter:
@@ -73,16 +74,27 @@ class TtfSvgConverter:
             outline.decompose(context=None, move_to=self.callbackMoveTo, line_to=self.callbackLineTo, conic_to=self.callbackConicTo, cubic_to=self.callbackCubicTo)
             path = Path(*self.svgPath).scaled(1, -1)
             viewbox = self.calcViewBox(path)
-            attr = {
-                'width': '100%',
-                'height': '100%',
-                'viewBox': viewbox,
-                'preserveAspectRatio': 'xMidYMid meet'
-            }
+            # attr = {
+            #     'width': '100%',
+            #     'height': '100%',
+            #     'viewBox': viewbox,
+            #     'preserveAspectRatio': 'xMidYMid meet'
+            # }
+            
             #MODE
-            #0-save stroke
-            #1-save fill
-            #2-nosave stroke
-            #3-nosave fill
-            return wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output, mode=mode)
-            # break 
+            #0-save
+            #1-nosave
+            dwg = Drawing(filename=output, viewBox=viewbox, size=('100%', '100%'), preserveAspectRatio='xMidYMid meet')
+            for i, p in enumerate([path]):
+                ps = p.d()#Path(p).d()
+
+                dwg.add(dwg.path(ps, stroke='#000000', stroke_width=str(2), fill='none'))
+            # print(dwg)
+            if mode == 0:
+                dwg.save()
+            elif mode == 1:
+                return dwg
+            else:
+                pass
+            # return wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output, mode=mode)
+            break 

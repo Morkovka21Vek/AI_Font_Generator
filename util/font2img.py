@@ -43,7 +43,7 @@ def font2img(pathToFont: str, mode: str, settings):
         print(temp_dir.name, zipFilePath.name+'.zip')
         converter = TtfSvgConverter(ttfPath=pathToFont)
         for key, text in m_dict.items():
-            converter.generate(text, os.path.join(temp_dir.name, str(key)+".svg"), mode=1)
+            converter.generate(text, os.path.join(temp_dir.name, str(key)+".svg"), mode=0)
         shutil.make_archive(zipFilePath.name, 'zip', temp_dir.name)
         gr.Info("Преобразование завершено!")
         logger.info("Done!")
