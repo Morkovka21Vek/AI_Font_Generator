@@ -74,7 +74,7 @@ class TtfSvgConverter:
             outline.decompose(context=None, move_to=self.callbackMoveTo, line_to=self.callbackLineTo, conic_to=self.callbackConicTo, cubic_to=self.callbackCubicTo)
             path = Path(*self.svgPath).scaled(1, -1)
             if self.svgPath == []:
-                print(output)
+                # print(output)
                 return None
             # print(path, self.svgPath, end="\n\n\n\n")
             viewbox = self.calcViewBox(path)

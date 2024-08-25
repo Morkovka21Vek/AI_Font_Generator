@@ -78,7 +78,7 @@ if __name__ == "__main__":
     # fullListFonts = [y for x in os.walk(folderFontPath) for extension in ['*.ttf', '*.otf', '*.TTF', '*.OTF', '*.pfm', '*.pfb', '*.PFM', '*.PFG'] for y in glob(os.path.join(x[0], extension))]
     fullListFonts = [y for x in os.walk(folderFontPath) for extension in ['*.ttf', '*.otf', '*.TTF', '*.OTF'] for y in glob(os.path.join(x[0], extension))]
     print(len(fullListFonts))
-    fullListFonts = fullListFonts[:150]
+    fullListFonts = fullListFonts[:1000]
     print(len(fullListFonts))
     for fontPath in tqdm(fullListFonts):
         font2arr(fontPath, os.path.basename(fontPath).split('.')[0])
