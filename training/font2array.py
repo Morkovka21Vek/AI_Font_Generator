@@ -57,6 +57,8 @@ def font2arr(pathToFont: str, fontName: str):
     for key, text in m_dict.items():
         if key in desiredLetters:
             xml = converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"), mode=1)
+            if xml == None:
+                continue
             path = extract_path(xml, 100)
             path = np.array(path)
             path = (path-np.min(path))/(np.max(path)-np.min(path))
@@ -66,7 +68,8 @@ def font2arr(pathToFont: str, fontName: str):
             # plt.plot(xpoints, ypoints, "ro")
             # plt.show()
             # print(np.shape(path))
-    np.savez(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDatasetArray", f"{fontName}.npz"), **paths)
+    if paths != {}:
+        np.savez(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDatasetArray", f"{fontName}.npz"), **paths)
         
 if __name__ == "__main__":
     folderFontPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingFonts")
@@ -75,7 +78,7 @@ if __name__ == "__main__":
     # fullListFonts = [y for x in os.walk(folderFontPath) for extension in ['*.ttf', '*.otf', '*.TTF', '*.OTF', '*.pfm', '*.pfb', '*.PFM', '*.PFG'] for y in glob(os.path.join(x[0], extension))]
     fullListFonts = [y for x in os.walk(folderFontPath) for extension in ['*.ttf', '*.otf', '*.TTF', '*.OTF'] for y in glob(os.path.join(x[0], extension))]
     print(len(fullListFonts))
-    fullListFonts = fullListFonts[:10]
+    fullListFonts = fullListFonts[:150]
     print(len(fullListFonts))
     for fontPath in tqdm(fullListFonts):
         font2arr(fontPath, os.path.basename(fontPath).split('.')[0])

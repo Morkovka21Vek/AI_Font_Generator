@@ -73,6 +73,10 @@ class TtfSvgConverter:
             outline = face.glyph.outline
             outline.decompose(context=None, move_to=self.callbackMoveTo, line_to=self.callbackLineTo, conic_to=self.callbackConicTo, cubic_to=self.callbackCubicTo)
             path = Path(*self.svgPath).scaled(1, -1)
+            if self.svgPath == []:
+                print(output)
+                return None
+            # print(path, self.svgPath, end="\n\n\n\n")
             viewbox = self.calcViewBox(path)
             # attr = {
             #     'width': '100%',
@@ -88,12 +92,12 @@ class TtfSvgConverter:
             for i, p in enumerate([path]):
                 ps = p.d()#Path(p).d()
 
-                dwg.add(dwg.path(ps, stroke='#000000', stroke_width=str(2), fill='none'))
+                dwg.add(dwg.path(ps, stroke='#000000', stroke_width=str(2))) #, fill='none'
             # print(dwg)
             if mode == 0:
                 dwg.save()
             elif mode == 1:
-                return dwg
+                return dwg.tostring()
             else:
                 pass
             # return wsvg(paths=path, colors=['#000000'], svg_attributes=attr, filename=output, mode=mode)
