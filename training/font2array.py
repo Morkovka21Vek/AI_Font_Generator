@@ -72,7 +72,8 @@ def font2arr(pathToFont: str, fontName: str):
         np.savez(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDatasetArray", f"{fontName}.npz"), **paths)
         
 if __name__ == "__main__":
-    folderFontPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingFonts")
+    #folderFontPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingFonts")
+    folderFontPath = "C:\\Users\\User\\Documents\\AI_Font_Generator\\trainingFonts"
     # listFonts = os.listdir(folderFontPath)
     # fullListFonts = [os.path.join(folderFontPath, i) for i in listFonts]
     # fullListFonts = [y for x in os.walk(folderFontPath) for extension in ['*.ttf', '*.otf', '*.TTF', '*.OTF', '*.pfm', '*.pfb', '*.PFM', '*.PFG'] for y in glob(os.path.join(x[0], extension))]
