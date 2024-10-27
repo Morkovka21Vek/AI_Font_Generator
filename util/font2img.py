@@ -10,6 +10,7 @@ import logging
 import sys
 from tempfile import TemporaryFile, TemporaryDirectory
 from util.TtfSvgConverter import TtfSvgConverter
+
 sys.path.insert(1, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # https://github.com/mathandy/svgpathtools
@@ -18,10 +19,6 @@ from libs.svgpathtools import (wsvg, Line, CubicBezier, QuadraticBezier, Path)
 logger = logging.getLogger("app.util.font2img")
 
 convertImages = []
-
-# def font2img_start(pathToFont: str, mode: str, settings):
-#     out = font2img(pathToFont, mode, settings)
-#     out
 
 def font2img(pathToFont: str, mode: str, settings):
     global convertImages

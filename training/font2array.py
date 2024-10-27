@@ -27,25 +27,28 @@ def extract_path(name, freq, scale=1, x_offset=0, y_offset=0):
     # path_strings = [path.attrib['d'] for path in doc.find('path')]#[path.getAttribute('d') for path in doc.getElementsByTagName('path')]
     path_strings = [path.attrib['d'] for path in doc.findall('.//{http://www.w3.org/2000/svg}path')]
 
-    allItemsCount = 0
-    for path_string in path_strings:
-        items = parse_path(path_string)
-        allItemsCount += len(items)
+    allItemsCount = sum(len(parse_path(path_string)) for path_string in path_strings)#0
+    # for path_string in path_strings:
+    #     items = parse_path(path_string)
+    #     allItemsCount += len(items)
     AddPointCount = freq - allItemsCount*int(freq/allItemsCount)
     step = allItemsCount/freq
-    # print(allItemsCount, AddPointCount)
     path = []
+    path2 = []
     for path_string in path_strings:
         items = parse_path(path_string)
         for item in items:
             AddPointCount -= 1
             for i in range(int(freq/allItemsCount) + (1 if AddPointCount >= 0 else 0)):
+                if i == 0:
+                    pos2 = item.point(step*i)
+                    path2.append([(pos2.real+x_offset)*scale, (pos2.imag+y_offset)*scale])
                 pos = item.point(step*i)
                 path.append([(pos.real+x_offset)*scale, (pos.imag+y_offset)*scale])
                 if False:
                     pos2 = item.point(step*i+step/2)
                     path.append([(pos2.real+x_offset)*scale, (pos2.imag+y_offset)*scale])
-    return path
+    return path, path2
 
 def font2arr(pathToFont: str, fontName: str):
     paths = {}
@@ -59,21 +62,26 @@ def font2arr(pathToFont: str, fontName: str):
             xml = converter.generate(text, os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDataset", f"{fontName}__{str(key)}.svg"), mode=1)
             if xml == None:
                 continue
-            path = extract_path(xml, 100)
+            path, path2 = extract_path(xml, 100)
             path = np.array(path)
-            path = (path-np.min(path))/(np.max(path)-np.min(path))
+            path2 = np.array(path2)
+            # path = (path-np.min(path))/(np.max(path)-np.min(path))
+            # path2 = (path2-np.min(path))/(np.max(path)-np.min(path))
             paths[str(key)] = path
-            # xpoints = [p[0] for p in path]
-            # ypoints = [p[1] for p in path]
-            # plt.plot(xpoints, ypoints, "ro")
+            # plt.plot(path[:, 0], path[:, 1], "ro")
             # plt.show()
-            # print(np.shape(path))
+            plt.plot(path[:, 0], path[:, 1]*-1+1)
+            plt.plot(path2[:, 0], path2[:, 1]*-1+1, "bo")
+            for i, pos in enumerate(path2):
+                plt.text(pos[0], pos[1]*-1+1, str(i), color="r")#, fontsize="x-small"
+            plt.show()
     if paths != {}:
-        np.savez(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDatasetArray", f"{fontName}.npz"), **paths)
+        pass
+        # np.savez(os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingDatasetArray", f"{fontName}.npz"), **paths)
         
 if __name__ == "__main__":
     #folderFontPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "trainingFonts")
-    folderFontPath = "C:\\Users\\User\\Documents\\AI_Font_Generator\\trainingFonts"
+    folderFontPath = "C:\\Users\\User\\Documents\\GitHub\\AI_Font_Generator\\training\\trainingFontsTest"#"C:\\Users\\User\\Documents\\AI_Font_Generator\\trainingFonts"
     # listFonts = os.listdir(folderFontPath)
     # fullListFonts = [os.path.join(folderFontPath, i) for i in listFonts]
     # fullListFonts = [y for x in os.walk(folderFontPath) for extension in ['*.ttf', '*.otf', '*.TTF', '*.OTF', '*.pfm', '*.pfb', '*.PFM', '*.PFG'] for y in glob(os.path.join(x[0], extension))]

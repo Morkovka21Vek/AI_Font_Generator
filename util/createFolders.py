@@ -1,7 +1,12 @@
 import os
-import shutil
+# import shutil
 
-def createFolders(flag=False):
+def createFolders(flag: bool=False):
+    """create folders
+
+    Args:
+        flag (bool, optional): more folders. Defaults to False.
+    """    
     directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if not os.path.exists(os.path.join(directory, 'models')):
         os.makedirs(os.path.join(directory, 'models'))
@@ -24,5 +29,3 @@ def createFolders(flag=False):
 
 if __name__ == "__main__":
     createFolders(True)
-else:
-    createFolders(False)
