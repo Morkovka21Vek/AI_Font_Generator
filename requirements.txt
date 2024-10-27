@@ -6,3 +6,4 @@ fonttools
 freetype-py
 Pillow
 svg.path
+svgpathtools

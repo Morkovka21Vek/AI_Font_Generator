@@ -17,12 +17,12 @@
 ## Создает остальные символы шрифта на основе имеющихся с помощью ИИ.  
 
  Установка если есть git⬇️:
- ```Shell
+ ```sh
  git clone https://github.com/Morkovka21Vek/AI_Font_Generator.git
  ```
 
  Установка библиотек:
- ```Shell
+ ```sh
  pip install -r requirements.txt
  ``` 
  Запустите ```start_UI.py```
